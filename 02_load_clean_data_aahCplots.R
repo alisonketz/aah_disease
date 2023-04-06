@@ -611,3 +611,251 @@ df_camtrap_fd <- read.csv("~/Documents/Data/fawn_doe_ratio/Iowa_FDR_2017-2021_wi
 #the first year has 0 for males in the oldest age class, which is -Inf
 #so setting it to 0, which is equivalent to popsize of 1, in that age class
 
+
+################################################################################
+###
+### read in DMU shapefiles
+###
+###############################################################################
+
+# #these are the DMUs that roughly align with our study area
+# units <-c("70C-CWD","70D-CWD","70A-CWD","73E-CWD")
+
+# dmu_2002 <- st_read("/home/aketz/Documents/Data/DMU_shapefiles_2002_2013/dmu_2002.shp")
+ 
+# # st_crs(dmu_2013) <- 4326
+# # st_transform(dmu_2013,"+proj=tmerc +lat_0=0 +lon_0=-90 +k=0.9996 +x_0=520000+y_0=-4480000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs" )
+
+# dmu_2002$study<-ifelse(dmu_2002$UNIT_ID %in% units,1,0)
+
+# dmu_2013 <- st_read("/home/aketz/Documents/Data/DMU_shapefiles_2002_2013/dmu_2013.shp")
+# dmu_2013$study<-ifelse(dmu_2013$UNIT_ID %in% units,1,0)
+
+# dmu_2013 <- st_read("/home/aketz/Documents/Data/DMU_shapefiles_2002_2013/dmu_2013.shp")
+# dmu_2013$study<-ifelse(dmu_2013$UNIT_ID %in% units,1,0)
+
+
+# study_area <- st_read("/home/aketz/Documents/Data/Study_Area/secrdtrsWGS84selection.shp")
+# study_bound <-st_union(study_area)
+# plot(study_bound)
+# head(study_bound)
+
+# ggplot()+
+#   geom_sf(data=dmu_2002,color="black",aes(fill=study))+
+#   geom_sf(data=study_bound,alpha=0,color="white")+ggtitle("2002")
+
+# dmu_vs_study <- ggplot()+
+#   geom_sf(data=dmu_2013,color="black",aes(fill=study))+
+#   geom_sf(data=study_bound,alpha=0,color="white")+ggtitle("2013")
+# dmu_vs_study
+# ggsave(dmu_vs_study,file="figures/dmu_vs_study_2013.png")
+
+
+# ####################################
+# ###
+# ### county vs study 
+# ###
+# ####################################
+
+# counties_study = c("Dane","Iowa","Grant")
+# county <- st_read("/home/aketz/Documents/Data/counties/dmu_2018_2020.shp")
+# county$study<-ifelse(county$CTY_NAME %in% counties_study,1,0)
+
+# county_vs_study <- ggplot()+
+#   geom_sf(data = county, color = "black",aes(fill = study)) +
+#   geom_sf(data = study_bound, alpha = 0, color = "white") + ggtitle("2018-2020")
+
+# county_vs_study
+
+# ggsave(county_vs_study,file="figures/county_vs_study_2018_2020.png")
+
+
+# ####################################
+# ###
+# ### county vs dmu 
+# ###
+# ####################################
+
+# county_dmu_plot <- ggplot()+
+#   geom_sf(data=dmu_2013,color="grey")+
+#   geom_sf(data=county,color="darkgrey",aes(fill=study),alpha=.2)+
+#   geom_sf(data=study_bound,alpha=0,color="white")+ggtitle("County lines and deer DMU 2013")
+
+# county_dmu_plot
+# ggsave(county_dmu_plot,file="figures/county_dmu_plot.png")
+
+
+
+# ####################################
+# ###
+# ### dane county proportion harvest 
+# ###
+# ####################################
+
+# county_dmu_plot <- ggplot()+
+#   geom_sf(data=dmu_2013,color="grey")+
+#   geom_sf(data=county,color="darkgrey",aes(fill=study),alpha=.2)+
+#   geom_sf(data=study_bound,alpha=0,color="white")+ggtitle("County lines and deer DMU 2013")
+
+# county_dmu_plot
+# ggsave(county_dmu_plot,file="figures/county_dmu_plot.png")
+
+
+# #extracting dane from county shapefile
+# st_crs(county)
+# st_transform(study_bound,st_crs(county))
+# st_intersection(county[county$dmu=="Dane",],study_bound)
+
+# ######################################################################################
+
+
+# df_dmu_totharvest <-df_dmu_harvest %>% group_by(yr) %>% summarise(antlered_gun = sum(antleredgun),
+#                                               antlerlessgun = sum(antlerlessgun),
+#                                               unknowngun = sum(unknowngun),
+#                                               totalgun = sum(totalgun),
+#                                               antleredbow = sum(antleredbow),
+#                                               antlered = sum(antleredgun)+sum(antleredbow),
+#                                               antlerless = sum(antlerlessgun),
+#                                               unknown = sum(unknowngun)
+#                                                ) #%>% pivot_longer(cols=-yr)
+
+
+
+# df_dmu_totharvest$antlered/df_harvest$antlered[df_harvest$year %in% (2002:2013)]
+
+
+# plot(2002:2013,df_dmu_totharvest$antlered/df_harvest$antlered[df_harvest$year %in% (2002:2013)])
+
+# png("figures/dmu_county_harvest_num.png")
+# plot(df_dmu_totharvest$antlered,df_harvest$antlered[df_harvest$year %in% (2002:2013)])
+# dev.off()
+
+
+# png("figures/dmu_county_harvest_prop.png")
+# plot(2002:2013,df_dmu_totharvest$antlered/df_harvest$antlered[df_harvest$year %in% (2002:2013)])
+# dev.off()
+
+###
+### calculate proportion area of county that is in study area for each county. 
+###
+
+#https://gis.stackexchange.com/questions/287602/how-to-calculate-the-polygon-area-and-create-a-column-of-results-in-r
+
+
+
+###########################
+###
+###
+###
+###########################
+
+
+# Ototal_long <- pivot_longer(Ototal[,1:3],2:3)
+# names(Ototal_long) <- c("Year","Harvest_Type","Harvest_Total")
+# Ototal_long$Harvest_Type <- factor(Ototal_long$Harvest_Type,labels=c("Antlered","Antlerless"))
+# ototal_plot <- ggplot(Ototal_long,aes(x=Year, y=Harvest_Total, color = Harvest_Type)) +
+#     geom_line(size=1.1) + 
+#     geom_point(size=1.4) +
+#     theme_bw() + 
+#     scale_color_manual(values=met.brewer("Troy",2),name="Harvest Type") +
+#     ylab("Harvest Total")+
+#     theme(axis.text=element_text(size=14),
+#             axis.title=element_text(size=16),
+#             legend.text=element_text(size=14),
+#             legend.title=element_text(size=16))
+# ggsave("figures/total_harvest_plot.png",ototal_plot,height=7,width=9)
+
+
+# Cage_antlerless  <- data.frame(Cage_less[,1:7])
+# Cage_antlerless <- Cage_antlerless/apply(Cage_antlerless,1,sum)
+# names(Cage_antlerless)=c("Fawn","1.5","2.5","3.5","4.5-5.5","6.5-8.5","9.5+")
+# Cage_antlerless$Year <- 2002:2021
+
+
+# Cage_less_long <- pivot_longer(Cage_antlerless,cols=1:7)
+# Cage_less_long$name <- factor(as.factor(Cage_less_long$name),levels=c("Fawn","1.5","2.5","3.5","4.5-5.5","6.5-8.5","9.5+"))
+# plotless_legend <- ggplot(Cage_less_long,aes(x=Year,y=value))+
+#     geom_col(aes(fill=name))+theme_bw()+
+#     scale_fill_manual(name="Age Class",values=rev(met.brewer("Veronese",7)))+
+#     ylab("Proportion")+ggtitle("Female")
+# ggsave("figures/plotless_legend.png",plotless_legend,height=6,width=10)
+
+
+# Cage_less_long$name <- factor(as.factor(Cage_less_long$name),levels=rev(c("Fawn","1.5","2.5","3.5","4.5-5.5","6.5-8.5","9.5+")))
+# plotless <- ggplot(Cage_less_long,aes(x=Year,y=value))+
+#     geom_col(aes(fill=name))+theme_bw()+
+#     scale_fill_manual(name="Age Class",values=met.brewer("Veronese",7))+
+#     ylab("Proportion")+ggtitle("Female")+theme(legend.position="bottom")+
+#     guides(color = guide_legend(nrow = 1))
+
+
+# Cage_antler <- cbind(Cage_less[,8],Cage_ant)
+# Cage_antler  <- data.frame(Cage_antler)
+# Cage_antler <- Cage_antler/apply(Cage_antler,1,sum)
+# names(Cage_antler)=c("Fawn","1.5","2.5","3.5","4.5-5.5","6.5+")
+# Cage_antler$Year <- 2002:2021
+# Cage_ant_long <- pivot_longer(Cage_antler,cols=1:6)
+# Cage_ant_long$name <- factor(as.factor(Cage_ant_long$name),levels=rev(c("Fawn","1.5","2.5","3.5","4.5-5.5","6.5+")))
+
+# # plotant <- ggplot(Cage_ant_long,aes(x=Year,y=value))+
+# # geom_point()+
+# # facet_wrap(.~name,ncol=1)+
+# # theme_bw()+
+# # ylab("Number Deer")+ylim(0,1000)
+
+# plotant <- ggplot(Cage_ant_long,aes(x=Year,y=value))+
+#     geom_col(aes(fill=name))+theme_bw()+
+#     scale_fill_manual(name="Age Class",values=met.brewer("Veronese",7)[2:7])+
+#     ylab("Proportion")+ggtitle("Male")
+# # plotant
+
+# ggsave("figures/plotant.png",plotant,height=6,width=10)
+# ggsave("figures/plotless.png",plotless,height=6,width=10)
+
+
+# combo_ant_less <- grid.arrange(plotant + theme(legend.position="none"),
+#                          plotless + theme(legend.position="none"),
+#                          nrow=1)
+
+# ggsave("figures/combo_ant_less.png",combo_ant_less,height=6,width=10)
+
+
+# fd_df <- data.frame(year=2002:2021,fd_ratio=c(fawndoe_df$overall_fd[1:15],
+# df_camtrap_fd$fdr_mean),fd_low=c(rep(NA,15),df_camtrap_fd$fdr_lower95),
+# fd_up=c(rep(NA,15),df_camtrap_fd$fdr_upper95)
+# )
+
+# fec_plot <- ggplot(fd_df,aes(x=year,y=fd_ratio))+
+#     geom_line(size=2)+
+#     geom_point(size=2)+theme_bw()+ylab("Fawn:Doe Ratio")+
+#     geom_errorbar(aes(ymin=fd_low, ymax=fd_up), width=.5,
+#                  position=position_dodge(.9))+
+#     theme(axis.text=element_text(size=14),
+#             axis.title=element_text(size=16),
+#             legend.text=element_text(size=14),
+#             legend.title=element_text(size=16))+xlab("Year")
+
+
+# ggsave("figures/fec_plot.png",fec_plot,width=8,height=6)
+
+
+
+# report_plot <- ggplot(report_df,aes(x=year,y=compliance_rate)) +
+#     geom_point() +
+#     geom_line() +
+#     geom_errorbar(aes(ymin=compliance_rate - 2*se,ymax = compliance_rate + 2*se),width=.2)+
+#     geom_hline(yintercept =report_hyp_sum[1],linetype="dashed",color=met.brewer("Veronese",1))+
+#     theme_bw()+
+#     ggtitle("Compliance Rate of 1st Harvested Deer")+
+#     ylab("Compliance Rate") +
+#     xlab("Year")+
+#     theme(axis.text=element_text(size=14),
+#             axis.title=element_text(size=16),
+#             legend.text=element_text(size=14),
+#             legend.title=element_text(size=16),
+#             title = element_text(size=16))
+
+# ggsave("figures/report_plot.png",report_plot,height = 6, width = 8)
+
+
+

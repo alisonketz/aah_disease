@@ -1,7 +1,7 @@
 ##########################################################################################################
 ###
 ### 
-### Age at harvest simple model
+### Age at harvest incorporating disease testing model
 ###
 ### Alison Ketz
 ### 02/22/2022
@@ -51,16 +51,25 @@ source("02_load_clean_data.R")
 ### Format data
 ####################################
 
-source("03_preliminaries.R")
+# source("03_preliminaries.R")
+source("03_preliminaries_fake.R")
+
+##############################################
+### Functions to calculate
+### probability of survival &
+### probability of changing infection status
+###############################################
+
+source("04_functions.R")
 
 ###################################
 ### Run model
 ###################################
 
-source("04_run_model.R")
+source("05_run_model.R")
 
 ###################################
 ### Post Process summary and plots
 ###################################
 
-source("05_results_plots_sum.R")
+source("06_results_plots_sum.R")
