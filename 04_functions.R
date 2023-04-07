@@ -6,7 +6,7 @@
 ###
 #######################################################################
 
-calc_surv_prob <- nimble::nimbleFunction(
+calc_surv_aah <- nimble::nimbleFunction(
     run = function(
         ### argument type declarations
         nT_age = double(0),
@@ -74,12 +74,27 @@ calc_surv_prob <- nimble::nimbleFunction(
   return(s_aah[1:2,1:n_agef,1:n_year])
 })
 
-Ccalc_surv_prob <- compileNimble(calc_surv_prob)
+Ccalc_surv_aah <- compileNimble(calc_surv_aah)
 
-Ccalc_surv_prob(
+
+sn_sus <- Ccalc_surv_aah(
+    nT_age = nT_age_surv,
+    nT_period = nT_period_surv,
+    beta0 = sus_beta0_survival,
+    beta_sex = sus_beta_sex_survival,
+    age_effect = age_effect_survival,
+    period_effect = period_effect_survival,
+    yr_end_indx = d_fit_season$yr_end,
+    intvl_step_yr = intvl_step_yr,
+    n_year = n_year,
+    n_agef = n_agef,
+    n_agem = n_agem)
+
+
+sn_inf <- calc_surv_aah(
         nT_age = nT_age_surv,
-        nT_period = nT_age_surv,
-        beta0 = sus_beta0_survival,
+        nT_period = nT_period_surv,
+        beta0 = inf_beta0_survival,
         beta_sex = sus_beta_sex_survival,
         age_effect = age_effect_survival,
         period_effect = period_effect_survival,
@@ -87,9 +102,34 @@ Ccalc_surv_prob(
         intvl_step_yr = intvl_step_yr,
         n_year = n_year,
         n_agef = n_agef,
-        n_agem = n_agem
-        )
+        n_agem = n_agem)
 
+
+# sn_sus[1:2,1:n_agef,1:n_year] <- Ccalc_surv_aah(
+#     nT_age = nT_age_surv,
+#     nT_period = nT_period_surv,
+#     beta0 = sus_beta0_survival,
+#     beta_sex = sus_beta_sex_survival,
+#     age_effect = age_effect_survival,
+#     period_effect = period_effect_survival,
+#     yr_end_indx = d_fit_season$yr_end,
+#     intvl_step_yr = intvl_step_yr,
+#     n_year = n_year,
+#     n_agef = n_agef,
+#     n_agem = n_agem)
+
+# sn_inf[1:2,1:n_agef,1:n_year] <- calc_surv_aah(
+#         nT_age = nT_age_surv,
+#         nT_period = nT_period_surv,
+#         beta0 = inf_beta0_survival,
+#         beta_sex = sus_beta_sex_survival,
+#         age_effect = age_effect_survival,
+#         period_effect = period_effect_survival,
+#         yr_end_indx = d_fit_season$yr_end,
+#         intvl_step_yr = intvl_step_yr,
+#         n_year = n_year,
+#         n_agef = n_agef,
+#         n_agem = n_agem)
 
 #######################################################################
 ###
@@ -116,7 +156,13 @@ calc_surv_harvest <- nimble::nimbleFunction(
         ng_start = double(1),
         gun_start = double(1),
         gun_end = double(1),
-        ng_end = double(1)
+        ng_end = double(1),
+        yr_start = double(1),
+        yr_end = double(1),
+        p_nogun_f = double(0),
+        p_nogun_m = double(0),
+        p_gun_f = double(0),
+        p_gun_m = double(0)
         ) {
 
     ###################################################################
@@ -126,9 +172,11 @@ calc_surv_harvest <- nimble::nimbleFunction(
     ###################################################################
 
     # s_aah[sex,age,period]
-    # S0 <- nimArray(NA,c(2,nT_age,nT_period))
+    S0 <- nimArray(NA,c(2,nT_age,nT_period))
     UCH <- nimArray(NA,c(2,nT_age,nT_period))
-    # s_aah <- nimArray(NA,c(2,n_agef,n_year))
+    UCH_hunt <- nimArray(NA,c(2,nT_age,nT_period))
+    S0_hunt <- nimArray(NA,c(2,nT_age,nT_period))
+    s_hunt <- nimArray(NA,c(2,n_agef,n_year))
 
     for(i in 1:nT_age) {
         for(j in 1:nT_period) {
@@ -138,9 +186,17 @@ calc_surv_harvest <- nimble::nimbleFunction(
             # S0[2, i, j] <- exp(-sum(UCH[2,1:i,1:j]))
         }
     }
-    UCH_hunt[1:2,1:nT_age,1:nT_period] <- UCH[1:2,1:nT_age,1:nT_period]
+    # UCH_hunt[1:2,1:nT_age,1:nT_period] <- UCH[1:2,1:nT_age,1:nT_period]
 
     for(i in 1:n_year){
+        for(j in yr_start[i]:(ng_start[i]-1)){
+            UCH_hunt[1,1:nT_age,j] <- UCH[1,1:nT_age,j]
+            UCH_hunt[2,1:nT_age,j] <- UCH[2,1:nT_age,j]
+        }
+        for(j in (ng_end[i] + 1):(yr_end[i])){
+            UCH_hunt[1,1:nT_age,j] <- UCH[1,1:nT_age,j]
+            UCH_hunt[2,1:nT_age,j] <- UCH[2,1:nT_age,j]
+        }
         for(j in ng_start[i]:(gun_start[i]-1)){
             UCH_hunt[1,1:nT_age,j] <- UCH[1,1:nT_age,j] * p_nogun_f
             UCH_hunt[2,1:nT_age,j] <- UCH[2,1:nT_age,j] * p_nogun_m
@@ -178,7 +234,7 @@ calc_surv_harvest <- nimble::nimbleFunction(
     }
     #antlered yearlings and older first year
     for(a in 2:n_agem) {
-        s_hunt[1, a, 1] <- S0_end[1, ng_end[1], a * intvl_step_yr]
+        s_hunt[1, a, 1] <- S0_hunt[1, ng_end[1], a * intvl_step_yr]
     }
 
     #first year all ages from process model
@@ -195,13 +251,11 @@ calc_surv_harvest <- nimble::nimbleFunction(
   returnType(double(3))
   return(s_hunt[1:2,1:n_agef,1:n_year])
 })
-
 Ccalc_surv_harvest <- compileNimble(calc_surv_harvest)
 
 
-Ccalc_surv_harvest(
-        nT_age = nT_age_surv,
-        nT_period = nT_age_surv,
+sh_sus <- Ccalc_surv_harvest(nT_age = nT_age_surv,
+        nT_period = nT_period_surv,
         beta0 = sus_beta0_survival,
         beta_sex = sus_beta_sex_survival,
         age_effect = age_effect_survival,
@@ -210,14 +264,49 @@ Ccalc_surv_harvest(
         intvl_step_yr = intvl_step_yr,
         n_year = n_year,
         n_agef = n_agef,
-        n_agem = n_agem
+        n_agem = n_agem,
+        pre_hunt_end = d_fit_season$pre_hunt_end,
+        ng_start = d_fit_season$ng_start,
+        gun_start = d_fit_season$gun_start,
+        gun_end = d_fit_season$gun_end,
+        ng_end = d_fit_season$ng_end,
+        yr_start = d_fit_season$yr_start,
+        yr_end = d_fit_season$yr_end,
+        p_nogun_f = p_ng_f,
+        p_nogun_m = p_ng_m,
+        p_gun_f = p_gun_f,
+        p_gun_m = p_gun_m
         )
 
 
 
+# sh_sus[1:2,1:n_agef,1:n_year] <- Ccalc_surv_harvest(nT_age = nT_age_surv,
+#         nT_period = nT_period_surv,
+#         beta0 = sus_beta0_survival,
+#         beta_sex = sus_beta_sex_survival,
+#         age_effect = age_effect_survival,
+#         period_effect = period_effect_survival,
+#         yr_end_indx = d_fit_season$yr_end,
+#         intvl_step_yr = intvl_step_yr,
+#         n_year = n_year,
+#         n_agef = n_agef,
+#         n_agem = n_agem,
+#         pre_hunt_end = d_fit_season$pre_hunt_end,
+#         ng_start = d_fit_season$ng_start,
+#         gun_start = d_fit_season$gun_start,
+#         gun_end = d_fit_season$gun_end,
+#         ng_end = d_fit_season$ng_end,
+#         yr_start = d_fit_season$yr_start,
+#         yr_end = d_fit_season$yr_end,
+#         p_nogun_f = p_ng_f,
+#         p_nogun_m = p_nogun_m,
+#         p_gun_f = p_gun_f,
+#         p_gun_m = p_gun_m
+#         )
+
 #######################################################################
 ###
-### Function to calculation probability of getting infection 
+### Function to calculatw probability of infection
 ### based on FOI age and period effects
 ### Weekly Version
 ###
@@ -231,7 +320,8 @@ calc_infect_prob <- nimbleFunction(
                  m_age = double(1),
                  f_period = double(1),
                  m_period = double(1),
-                 nT_period_foi=double(0)) {
+                 nT_period_foi = double(0)) {
+
     p <- nimArray(value = 0, c(2,Nage_lookup,nT_period_foi))
     gam <-nimArray(value = 0, c(2,Nage_lookup,nT_period_foi))
 

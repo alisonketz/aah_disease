@@ -468,6 +468,13 @@ d_fit_season$yr_end
 
 ################################################################
 ###
-### Preliminaries for calculating prob(survival) for AAH model
+### Load p_hunt results from cause-specific analysis
 ###
 #################################################################
+
+load("datafiles/p_hunt.Rdata")
+
+p_ng_f <- p_hunt$p_ng_f
+p_gun_f <- p_hunt$p_gun_f
+p_ng_m <- p_hunt$p_ng_m
+p_gun_m <- p_hunt$p_gun_m
