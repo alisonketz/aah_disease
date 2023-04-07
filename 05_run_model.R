@@ -88,22 +88,23 @@ modelcode <- nimbleCode({
   # inf_beta0 = inf_beta0,
   # inf_beta_sex = inf_beta_sex
 
-    # sn_sus ~ dbeta(300,100)
+    ## constant test
+    ## sn_sus ~ dbeta(300,100)
 
-    #long-term mean cloglog survival natural (sn)
-    # tau_sn_sus ~ dgamma(10, 1)
-    mu_sn_sus[1] ~ dnorm(cloglog(.05), 10)
-    mu_sn_sus[2] ~ dnorm(cloglog(.15), 10)
-    for (t in 1:n_year) {
-        for(a in 1:n_agef) {
-          cll_sn_sus[1, a, t] ~ dnorm(mu_sn_sus[1], 10)
-          sn_sus[1, a, t] <- exp(-exp(cll_sn_sus[1, a, t]))
-        }
-        for(a in 1:n_agem) {
-            cll_sn_sus[2, a, t] ~ dnorm(mu_sn_sus[2], 10)
-            sn_sus[2, a, t] <- exp(-exp(cll_sn_sus[2, a, t]))
-        }
-    }
+    ## long-term mean cloglog survival natural (sn)
+    ## tau_sn_sus ~ dgamma(10, 1)
+    # mu_sn_sus[1] ~ dnorm(cloglog(.05), 10)
+    # mu_sn_sus[2] ~ dnorm(cloglog(.15), 10)
+    # for (t in 1:n_year) {
+    #     for(a in 1:n_agef) {
+    #       cll_sn_sus[1, a, t] ~ dnorm(mu_sn_sus[1], 10)
+    #       sn_sus[1, a, t] <- exp(-exp(cll_sn_sus[1, a, t]))
+    #     }
+    #     for(a in 1:n_agem) {
+    #         cll_sn_sus[2, a, t] ~ dnorm(mu_sn_sus[2], 10)
+    #         sn_sus[2, a, t] <- exp(-exp(cll_sn_sus[2, a, t]))
+    #     }
+    # }
 
   ###################################################
   #### Non-Hunting Season Survival Infected
@@ -111,58 +112,160 @@ modelcode <- nimbleCode({
     
     # sn_inf ~ dbeta(150,100)
     # tau_sn_inf ~ dgamma(10, 1)
-    mu_sn_inf[1] ~ dnorm(cloglog(.2), 10)
-    mu_sn_inf[2] ~ dnorm(cloglog(.3), 10)
-    for (t in 1:n_year) {
-        for(a in 1:n_agef){
-          cll_sn_inf[1, a, t] ~ dnorm(mu_sn_inf[1], 10)
-          sn_inf[1, a, t] <- exp(-exp(cll_sn_inf[1, a, t]))
-        }
-        for(a in 1:n_agem){
-            cll_sn_inf[2, a, t] ~ dnorm(mu_sn_inf[2], 10)
-            sn_inf[2, a, t] <- exp(-exp(cll_sn_inf[2, a, t]))
-        }
-    }
+  #   mu_sn_inf[1] ~ dnorm(cloglog(.2), 10)
+  #   mu_sn_inf[2] ~ dnorm(cloglog(.3), 10)
+  #   for (t in 1:n_year) {
+  #       for(a in 1:n_agef){
+  #         cll_sn_inf[1, a, t] ~ dnorm(mu_sn_inf[1], 10)
+  #         sn_inf[1, a, t] <- exp(-exp(cll_sn_inf[1, a, t]))
+  #       }
+  #       for(a in 1:n_agem){
+  #           cll_sn_inf[2, a, t] ~ dnorm(mu_sn_inf[2], 10)
+  #           sn_inf[2, a, t] <- exp(-exp(cll_sn_inf[2, a, t]))
+  #       }
+  #   }
+
+
+  # ###################################################
+  # #### Hunting Season Survival Susceptibles
+  # ###################################################
+
+  #   # sh_sus ~ dbeta(200,100)
+  #   # tau_sh_sus ~ dgamma(1, 1)
+  #   mu_sh_sus[1] ~ dnorm(cloglog(.4), 10)
+  #   mu_sh_sus[2] ~ dnorm(cloglog(.5), 10)
+  #   for (t in 1:n_year) {
+  #       for(a in 1:n_agef) {
+  #         cll_sh_sus[1, a, t] ~ dnorm(mu_sh_sus[1], 10)
+  #         sh_sus[1, a, t] <- exp(-exp(cll_sh_sus[1, a, t]))
+  #       }
+  #       for(a in 1:n_agem) {
+  #           cll_sh_sus[2, a, t] ~ dnorm(mu_sh_sus[2], 10)
+  #           sh_sus[2, a, t] <- exp(-exp(cll_sh_sus[2, a, t]))
+  #       }
+  #   }
+
+  # ###################################################
+  # #### Hunting Season Survival Infected
+  # ###################################################
+
+  #   # sh_inf ~ dbeta(150, 100)
+  #   # tau_sh_inf ~ dgamma(1, 1)
+  #   mu_sh_inf[1] ~ dnorm(cloglog(.4), 10)
+  #   mu_sh_inf[2] ~ dnorm(cloglog(.5), 10)
+  #   for (t in 1:(n_year)) {
+  #       for(a in 1:n_agef) {
+  #         cll_sh_inf[1, a, t] ~ dnorm(mu_sh_inf[1], 10)
+  #         sh_inf[1, a, t] <- exp(-exp(cll_sh_inf[1, a, t]))
+  #       }
+  #       for(a in 1:n_agem) {
+  #           cll_sh_inf[2, a, t] ~ dnorm(mu_sh_inf[2], 10)
+  #           sh_inf[2, a, t] <- exp(-exp(cll_sh_inf[2, a, t]))
+  #       }
+  #   }
 
 
   ###################################################
-  #### Hunting Season Survival Susceptibles
+  #### Overall Survival Susceptibles
   ###################################################
 
-    # sh_sus ~ dbeta(200,100)
-    # tau_sh_sus ~ dgamma(1, 1)
-    mu_sh_sus[1] ~ dnorm(cloglog(.4), 10)
-    mu_sh_sus[2] ~ dnorm(cloglog(.5), 10)
-    for (t in 1:n_year) {
-        for(a in 1:n_agef) {
-          cll_sh_sus[1, a, t] ~ dnorm(mu_sh_sus[1], 10)
-          sh_sus[1, a, t] <- exp(-exp(cll_sh_sus[1, a, t]))
-        }
-        for(a in 1:n_agem) {
-            cll_sh_sus[2, a, t] ~ dnorm(mu_sh_sus[2], 10)
-            sh_sus[2, a, t] <- exp(-exp(cll_sh_sus[2, a, t]))
-        }
-    }
+  sn_sus[1:2,1:n_agef,1:n_year] <- calc_surv_aah(nT_age = nT_age_surv,
+          nT_period = nT_period_surv,
+          beta0 = sus_beta0_survival,
+          beta_sex = sus_beta_sex_survival,
+          age_effect = age_effect_survival[1:nT_age_surv],
+          period_effect = period_effect_survival[1:nT_period_surv],
+          yr_end_indx = yr_end_indx[1:n_year],
+          intvl_step_yr = intvl_step_yr,
+          n_year = n_year,
+          n_agef = n_agef,
+          n_agem = n_agem)
 
   ###################################################
-  #### Hunting Season Survival Infected
+  #### Overall Survival CWD Infected
   ###################################################
 
-    # sh_inf ~ dbeta(150, 100)
-    # tau_sh_inf ~ dgamma(1, 1)
-    mu_sh_inf[1] ~ dnorm(cloglog(.4), 10)
-    mu_sh_inf[2] ~ dnorm(cloglog(.5), 10)
-    for (t in 1:(n_year)) {
-        for(a in 1:n_agef) {
-          cll_sh_inf[1, a, t] ~ dnorm(mu_sh_inf[1], 10)
-          sh_inf[1, a, t] <- exp(-exp(cll_sh_inf[1, a, t]))
-        }
-        for(a in 1:n_agem) {
-            cll_sh_inf[2, a, t] ~ dnorm(mu_sh_inf[2], 10)
-            sh_inf[2, a, t] <- exp(-exp(cll_sh_inf[2, a, t]))
-        }
-    }
+  sn_inf[1:2,1:n_agef,1:n_year] <- calc_surv_aah(nT_age = nT_age_surv,
+          nT_period = nT_period_surv,
+          beta0 = inf_beta0_survival,
+          beta_sex = inf_beta_sex_survival,
+          age_effect = age_effect_survival[1:nT_age_surv],
+          period_effect = period_effect_survival[1:nT_period_surv],
+          yr_end_indx = yr_end_indx[1:n_year],
+          intvl_step_yr = intvl_step_yr,
+          n_year = n_year,
+          n_agef = n_agef,
+          n_agem = n_agem)
 
+  ###################################################
+  #### Hunting Survival Susceptibles
+  ###################################################
+
+  sh_sus[1:2,1:n_agef,1:n_year] <- calc_surv_harvest(nT_age = nT_age_surv,
+          nT_period = nT_period_surv,
+          beta0 = sus_beta0_survival,
+          beta_sex = sus_beta_sex_survival,
+          age_effect = age_effect_survival[1:nT_age_surv],
+          period_effect = period_effect_survival[1:nT_period_surv],
+          yr_end_indx = yr_end_indx[1:n_year],
+          intvl_step_yr = intvl_step_yr,
+          n_year = n_year,
+          n_agef = n_agef,
+          n_agem = n_agem,
+          pre_hunt_end = pre_hunt_end[1:n_year],
+          ng_start = ng_start[1:n_year],
+          gun_start = gun_start[1:n_year],
+          gun_end = gun_end[1:n_year],
+          ng_end = ng_end[1:n_year],
+          yr_start = yr_start[1:n_year],
+          yr_end = yr_end[1:n_year],
+          p_nogun_f = p_ng_f,
+          p_nogun_m = p_ng_m,
+          p_gun_f = p_gun_f,
+          p_gun_m = p_gun_m
+          )
+
+  ###################################################
+  #### Hunting Survival Infected
+  ###################################################
+
+  sh_inf[1:2,1:n_agef,1:n_year] <- calc_surv_harvest(nT_age = nT_age_surv,
+          nT_period = nT_period_surv,
+          beta0 = inf_beta0_survival,
+          beta_sex = inf_beta_sex_survival,
+          age_effect = age_effect_survival[1:nT_age_surv],
+          period_effect = period_effect_survival[1:nT_period_surv],
+          yr_end_indx = yr_end_indx[1:n_year],
+          intvl_step_yr = intvl_step_yr,
+          n_year = n_year,
+          n_agef = n_agef,
+          n_agem = n_agem,
+          pre_hunt_end = pre_hunt_end[1:n_year],
+          ng_start = ng_start[1:n_year],
+          gun_start = gun_start[1:n_year],
+          gun_end = gun_end[1:n_year],
+          ng_end = ng_end[1:n_year],
+          yr_start = yr_start[1:n_year],
+          yr_end = yr_end[1:n_year],
+          p_nogun_f = p_ng_f,
+          p_nogun_m = p_ng_m,
+          p_gun_f = p_gun_f,
+          p_gun_m = p_gun_m
+          )
+
+
+  ###################################################
+  #### Probability of Infection based on FOI hazards
+  ###################################################
+
+  psi[1:2,1:n_agef,1:n_year] <- calc_infect_prob(age_lookup_f = age_lookup_f[1:Nage_lookup],
+                        age_lookup_m = age_lookup_m[1:Nage_lookup],
+                        Nage_lookup = Nage_lookup,
+                        f_age = f_age_foi[1:n_agef],
+                        m_age = m_age_foi[1:n_agem],
+                        f_period = f_period_foi[1:n_year],
+                        m_period = m_period_foi[1:n_year],
+                        nT_period_foi = n_year)
 
   ######################################################################
   ###
@@ -387,19 +490,37 @@ nimConsts <- list(
     sizeCage_m = sizeCage_m,
     report_hyp_all = report_hyp_all,
     report_hyp_y = report_hyp_y,
-    psi = array(runif(2*n_agef*n_year, .001, .01),c(2, n_agef, n_year)),
+    # psi = array(runif(2*n_agef*n_year, .001, .01),c(2, n_agef, n_year)),
     # fec_init = fawndoe_df$overall_fd[1],
-    n_year_fec_early = n_year_fec_early#,
+    n_year_fec_early = n_year_fec_early,
     # n_year_precollar = n_year_precollar,
     # n_year_collar = n_year_collar,
-    # age_effect = age_effect,
-    # period_effect = period_effect,
-    # sus_beta0 = sus_beta0,
-    # sus_beta_sex = sus_beta_sex,
-    # inf_beta0 = inf_beta0,
-    # inf_beta_sex = inf_beta_sex,
-    # nT_age = nT_age,
-    # nT_period = nT_period
+    age_effect_survival = age_effect_survival,
+    period_effect_survival = period_effect_survival,
+    sus_beta0_survival = sus_beta0_survival,
+    sus_beta_sex_survival = sus_beta_sex_survival,
+    inf_beta0_survival = inf_beta0_survival,
+    inf_beta_sex_survival = inf_beta_sex_survival,
+    nT_age_surv = nT_age_surv,
+    nT_period_surv = nT_period_surv,
+    pre_hunt_end = d_fit_season$pre_hunt_end,
+    ng_start = d_fit_season$ng_start,
+    gun_start = d_fit_season$gun_start,
+    gun_end = d_fit_season$gun_end,
+    ng_end = d_fit_season$ng_end,
+    yr_start = d_fit_season$yr_start,
+    yr_end = d_fit_season$yr_end,
+    p_ng_f = p_ng_f,
+    p_ng_m = p_ng_m,
+    p_gun_f = p_gun_f,
+    p_gun_m = p_gun_m,
+    age_lookup_f = age_lookup_f,
+    age_lookup_m = age_lookup_m,
+    Nage_lookup = Nage_lookup,
+    f_age = f_age_foi,
+    m_age = m_age_foi,
+    f_period = f_period_foi,
+    m_period = m_period_foi
 )
 
 #Initial values
@@ -409,13 +530,13 @@ initsFun <- function()list(
   # sn_inf = runif(1,.55,.65),
   # sh_inf = runif(1,.55,.65),
   # sh_sus = runif(1,.63,.73),
-  mu_sn_sus = rnorm(2,cloglog(.15), .001),
+  # mu_sn_sus = rnorm(2,cloglog(.15), .001),
   # tau_sn_sus = rgamma(1, 10, 1),
-  mu_sn_inf = rnorm(2,cloglog(.3), .001),
+  # mu_sn_inf = rnorm(2,cloglog(.3), .001),
   # tau_sn_inf = rgamma(1, 10, 1),
-  mu_sh_sus = rnorm(2,cloglog(.6), .001),
+  # mu_sh_sus = rnorm(2,cloglog(.6), .001),
   # tau_sh_sus = rgamma(1,4, 6),
-  mu_sh_inf = rnorm(2,cloglog(.5), .001),
+  # mu_sh_inf = rnorm(2,cloglog(.5), .001),
   # tau_sh_inf = rgamma(1,4, 6),
   # pop_sus = pop_sus_init,
   # pop_inf = pop_inf_init,
@@ -449,14 +570,14 @@ Rmodel$initializeInfo()
 parameters <- c("fec",
               "mu_fec",
               "fec_epsilon",
-              "sn_inf",
-              "sn_sus",
-              "sh_inf",
-              "sh_sus",
-              "mu_sn_sus",
-              "mu_sn_inf",
-              "mu_sh_sus",
-              "mu_sh_inf",
+              # "sn_inf",
+              # "sn_sus",
+              # "sh_inf",
+              # "sh_sus",
+              # "mu_sn_sus",
+              # "mu_sn_inf",
+              # "mu_sh_sus",
+              # "mu_sh_inf",
               # "tau_sn_sus",
               # "tau_sn_inf",
               # "tau_sh_sus",
@@ -485,6 +606,7 @@ Cnim <- compileNimble(Rmodel)
 CnimMCMC <- compileNimble(nimMCMC, project = Rmodel)
 
 set.seed(121915911)
+starttime <- Sys.time()
 mcmcout <- runMCMC(CnimMCMC,
                    niter = reps,
                    nburnin = bin,

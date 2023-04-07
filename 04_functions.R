@@ -76,7 +76,7 @@ calc_surv_aah <- nimble::nimbleFunction(
 
 Ccalc_surv_aah <- compileNimble(calc_surv_aah)
 
-
+starttime <- Sys.time()
 sn_sus <- Ccalc_surv_aah(
     nT_age = nT_age_surv,
     nT_period = nT_period_surv,
@@ -89,8 +89,10 @@ sn_sus <- Ccalc_surv_aah(
     n_year = n_year,
     n_agef = n_agef,
     n_agem = n_agem)
+endtime1 <- Sys.time() - starttime
 
 
+starttime <- Sys.time()
 sn_inf <- calc_surv_aah(
         nT_age = nT_age_surv,
         nT_period = nT_period_surv,
@@ -103,6 +105,7 @@ sn_inf <- calc_surv_aah(
         n_year = n_year,
         n_agef = n_agef,
         n_agem = n_agem)
+endtime2 <- Sys.time() - starttime
 
 
 # sn_sus[1:2,1:n_agef,1:n_year] <- Ccalc_surv_aah(
@@ -253,7 +256,7 @@ calc_surv_harvest <- nimble::nimbleFunction(
 })
 Ccalc_surv_harvest <- compileNimble(calc_surv_harvest)
 
-
+starttime <- Sys.time()
 sh_sus <- Ccalc_surv_harvest(nT_age = nT_age_surv,
         nT_period = nT_period_surv,
         beta0 = sus_beta0_survival,
@@ -277,6 +280,7 @@ sh_sus <- Ccalc_surv_harvest(nT_age = nT_age_surv,
         p_gun_f = p_gun_f,
         p_gun_m = p_gun_m
         )
+endtime3 <- Sys.time() - starttime
 
 
 
