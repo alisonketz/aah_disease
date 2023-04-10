@@ -213,8 +213,6 @@ calc_surv_harvest <- nimble::nimbleFunction(
             UCH_hunt[2,1:nT_age,j] <- UCH[2,1:nT_age,j] * p_nogun_m
         }
     }
-
-
     for(i in 1:nT_age) {
         for(j in 1:nT_period) {
             S0[1, i, j] <- exp(-sum(UCH[1,1:i,1:j]))

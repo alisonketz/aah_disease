@@ -75,10 +75,10 @@ prevalence_f <- (apply(Cage_inf[1,,],2,sum)/apply(Cage[1,,9:28],2,sum))
 prevalence_m <- (apply(Cage_inf[2,,],2,sum)/apply(Cage[2,,9:28],2,sum))
 df_prev_f <- data.frame(x=2002:2021,prevalence_f=log(prevalence_f))
 lm_f <- lm(prevalence_f~x,data=df_prev_f)
-summary(lm_f)
+# summary(lm_f)
 df_prev_m <- data.frame(x=2002:2021,prevalence_m=log(prevalence_m))
 lm_m <- lm(prevalence_m~x,data=df_prev_m)
-summary(lm_m)
+# summary(lm_m)
 pred_prev_f <- exp(predict(lm_f,newdata=data.frame(x=1993:2001)))
 pred_prev_m <- exp(predict(lm_m,newdata=data.frame(x=1993:2001)))
 
@@ -425,7 +425,16 @@ load("datafiles/age_lookup_f.Rdata")
 load("datafiles/age_lookup_m.Rdata")
 
 Nage_lookup <- length(age_lookup_f)
-nT_period_foi <- length(f_period_foi)
+x <- 2002:2022
+lmfperiod <- lm(f_period_foi~x)
+lmmperiod <- lm(m_period_foi~x)
+pred_foiperiod_f <- predict(lmfperiod,newdata=data.frame(x=1994:2001))
+pred_foiperiod_m <- predict(lmmperiod,newdata=data.frame(x=1994:2001))
+f_period_foi <- c(pred_foiperiod_f,f_period_foi)
+m_period_foi <- c(pred_foiperiod_m,m_period_foi)
+f_period_foi <- f_period_foi[-length(f_period_foi)]
+m_period_foi <- m_period_foi[-length(m_period_foi)]
+nT_period_foi <- length(f_period_foi) #number of years == n_year
 
 ##########################################################################
 ### Testing survival generated parameters
