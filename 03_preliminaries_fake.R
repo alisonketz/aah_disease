@@ -375,7 +375,7 @@ which(1994:2021 == 2017)
 
 ### creating the long vector of period effects
 # load("datafiles/period_effect_survival.Rdata")
-# load("~/Documents/integrate_s_foi/s_foi_v3/mcmcout.Rdata")
+load("~/Documents/integrate_s_foi/s_foi_v3/mcmcout.Rdata")
 # age_effect_surv <- mcmcout$summary$all.chains[grep("sus_age_effect",rownames(mcmcout$summary$all.chains)), 1]
 # period_effect_surv <- mcmcout$summary$all.chains[grep("sus_period_effect",rownames(mcmcout$summary$all.chains)),1]
 # sus_beta0_surv <- mcmcout$summary$all.chains[grep("sus_beta0",rownames(mcmcout$summary$all.chains)),1]
@@ -405,10 +405,16 @@ which(1994:2021 == 2017)
 
 load("datafiles/period_effect_survival.Rdata")
 load("datafiles/age_effect_survival.Rdata")
-load("datafiles/sus_beta0_survival.Rdata")
-load("datafiles/sus_beta_sex_survival.Rdata")
-load("datafiles/inf_beta0_survival.Rdata")
-load("datafiles/inf_beta_sex_survival.Rdata")
+# load("datafiles/sus_beta0_survival.Rdata")
+# load("datafiles/sus_beta_sex_survival.Rdata")
+# load("datafiles/inf_beta0_survival.Rdata")
+# load("datafiles/inf_beta_sex_survival.Rdata")
+
+sus_beta0_surv <- -5
+inf_beta0_surv <- -3
+sus_beta_sex_survival <- -.2
+inf_beta_sex_survival <- -.7
+
 nT_age_surv <- length(age_effect_survival)
 nT_period_surv <- length(period_effect_survival)
 
