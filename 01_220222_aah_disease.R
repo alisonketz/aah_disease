@@ -45,7 +45,8 @@ source("summarize.R")
 ### Load and clean data
 ####################################
 
-source("02_load_clean_data.R")
+# source("02_load_clean_data.R")
+source("02_load_data.R")
 
 ####################################
 ### Format data

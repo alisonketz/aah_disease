@@ -76,37 +76,36 @@ calc_surv_aah <- nimble::nimbleFunction(
 
 Ccalc_surv_aah <- compileNimble(calc_surv_aah)
 
-starttime <- Sys.time()
-sn_sus <- Ccalc_surv_aah(
-    nT_age = nT_age_surv,
-    nT_period = nT_period_surv,
-    beta0 = sus_beta0_survival,
-    beta_sex = sus_beta_sex_survival,
-    age_effect = age_effect_survival,
-    period_effect = period_effect_survival,
-    yr_end_indx = d_fit_season$yr_end,
-    intvl_step_yr = intvl_step_yr,
-    n_year = n_year,
-    n_agef = n_agef,
-    n_agem = n_agem)
-endtime1 <- Sys.time() - starttime
-save(endtime1,file="endtime1.Rdata")
+# starttime <- Sys.time()
+# sn_sus <- Ccalc_surv_aah(
+#     nT_age = nT_age_surv,
+#     nT_period = nT_period_surv,
+#     beta0 = sus_beta0_survival,
+#     beta_sex = sus_beta_sex_survival,
+#     age_effect = age_effect_survival,
+#     period_effect = period_effect_survival,
+#     yr_end_indx = d_fit_season$yr_end,
+#     intvl_step_yr = intvl_step_yr,
+#     n_year = n_year,
+#     n_agef = n_agef,
+#     n_agem = n_agem)
+# endtime1 <- Sys.time() - starttime
 
-starttime <- Sys.time()
-sn_inf <- calc_surv_aah(
-        nT_age = nT_age_surv,
-        nT_period = nT_period_surv,
-        beta0 = inf_beta0_survival,
-        beta_sex = inf_beta_sex_survival,
-        age_effect = age_effect_survival,
-        period_effect = period_effect_survival,
-        yr_end_indx = d_fit_season$yr_end,
-        intvl_step_yr = intvl_step_yr,
-        n_year = n_year,
-        n_agef = n_agef,
-        n_agem = n_agem)
-endtime2 <- Sys.time() - starttime
-save(endtime2,file="endtime1.2Rdata")
+
+# starttime <- Sys.time()
+# sn_inf <- calc_surv_aah(
+#         nT_age = nT_age_surv,
+#         nT_period = nT_period_surv,
+#         beta0 = inf_beta0_survival,
+#         beta_sex = sus_beta_sex_survival,
+#         age_effect = age_effect_survival,
+#         period_effect = period_effect_survival,
+#         yr_end_indx = d_fit_season$yr_end,
+#         intvl_step_yr = intvl_step_yr,
+#         n_year = n_year,
+#         n_agef = n_agef,
+#         n_agem = n_agem)
+# endtime2 <- Sys.time() - starttime
 
 
 # sn_sus[1:2,1:n_agef,1:n_year] <- Ccalc_surv_aah(
@@ -255,32 +254,31 @@ calc_surv_harvest <- nimble::nimbleFunction(
 })
 Ccalc_surv_harvest <- compileNimble(calc_surv_harvest)
 
-starttime <- Sys.time()
-sh_sus <- Ccalc_surv_harvest(nT_age = nT_age_surv,
-        nT_period = nT_period_surv,
-        beta0 = sus_beta0_survival,
-        beta_sex = sus_beta_sex_survival,
-        age_effect = age_effect_survival,
-        period_effect = period_effect_survival,
-        yr_end_indx = d_fit_season$yr_end,
-        intvl_step_yr = intvl_step_yr,
-        n_year = n_year,
-        n_agef = n_agef,
-        n_agem = n_agem,
-        pre_hunt_end = d_fit_season$pre_hunt_end,
-        ng_start = d_fit_season$ng_start,
-        gun_start = d_fit_season$gun_start,
-        gun_end = d_fit_season$gun_end,
-        ng_end = d_fit_season$ng_end,
-        yr_start = d_fit_season$yr_start,
-        yr_end = d_fit_season$yr_end,
-        p_nogun_f = p_ng_f,
-        p_nogun_m = p_ng_m,
-        p_gun_f = p_gun_f,
-        p_gun_m = p_gun_m
-        )
-endtime3 <- Sys.time() - starttime
-save(endtime3,file="endtime3.Rdata")
+# starttime <- Sys.time()
+# sh_sus <- Ccalc_surv_harvest(nT_age = nT_age_surv,
+#         nT_period = nT_period_surv,
+#         beta0 = sus_beta0_survival,
+#         beta_sex = sus_beta_sex_survival,
+#         age_effect = age_effect_survival,
+#         period_effect = period_effect_survival,
+#         yr_end_indx = d_fit_season$yr_end,
+#         intvl_step_yr = intvl_step_yr,
+#         n_year = n_year,
+#         n_agef = n_agef,
+#         n_agem = n_agem,
+#         pre_hunt_end = d_fit_season$pre_hunt_end,
+#         ng_start = d_fit_season$ng_start,
+#         gun_start = d_fit_season$gun_start,
+#         gun_end = d_fit_season$gun_end,
+#         ng_end = d_fit_season$ng_end,
+#         yr_start = d_fit_season$yr_start,
+#         yr_end = d_fit_season$yr_end,
+#         p_nogun_f = p_ng_f,
+#         p_nogun_m = p_ng_m,
+#         p_gun_f = p_gun_f,
+#         p_gun_m = p_gun_m
+#         )
+# endtime3 <- Sys.time() - starttime
 
 
 
@@ -343,17 +341,14 @@ calc_infect_prob <- nimbleFunction(
     return(p[1:2,1:Nage_lookup,1:nT_period_foi])
   })
 
-###testing state.transition function as R function
-starttime <- Sys.time()
-psi <- calc_infect_prob(age_lookup_f = age_lookup_f,
-                        age_lookup_m = age_lookup_m,
-                        Nage_lookup = Nage_lookup,
-                        f_age = f_age_foi,
-                        m_age = m_age_foi,
-                        f_period = f_period_foi,
-                        m_period = m_period_foi,
-                        nT_period_foi = nT_period_foi)
-endtime4 <- Sys.time() - starttime
-save(endtime4,file="endtime4.Rdata")
-
+#testing state.transition function as R function
+# psi <- calc_infect_prob(age_lookup_f = age_lookup_f,
+#                         age_lookup_m = age_lookup_m,
+#                         Nage_lookup = Nage_lookup,
+#                         f_age = f_age_foi,
+#                         m_age = m_age_foi,
+#                         f_period = f_period_foi,
+#                         m_period = m_period_foi,
+#                         nT_period_foi = nT_period_foi)
 # head(psi[1,,])
+

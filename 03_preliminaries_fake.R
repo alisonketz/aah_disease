@@ -14,6 +14,23 @@ n_agem <- 7
 n_agef <- 10
 n_sex <- 2
 
+
+##########################################
+### moment matching functions
+##########################################
+
+# lognormal_moments <- function(barx,s){
+# 	mu <- log(barx / sqrt((s^2) / (barx^2) + 1))
+# 	sigma <- sqrt(log((s^2) / (barx^2) + 1))
+# 	return(list(mu=mu,sigma=sigma))
+# }
+
+gamma_moments <- function(mu,sigma){
+	alpha <- (mu^2)/(sigma^2)
+	beta <- mu/(sigma^2)
+	return(list(alpha=alpha,beta=beta))
+}
+
 ####################################
 ###
 ### Calculating sex ratio prior to 
@@ -92,19 +109,17 @@ pred_prev_m
 ###
 ########################################
 
-# Ototal from 1993
+### Total population initialized from 1993
 initO <- df_harvest[df_harvest$year==1993,c(3,2)]
 initN_sus <- array(0, dim = c(n_sex,n_agef))
 initN_inf <- array(0, dim = c(n_sex,n_agef))
 
-
-#susceptible initial population
+###susceptible initial population
 ###antlerless
 initN_sus[1, 1] <- initO$antlerless * .5 * df_age_before_antlerless$proportion[1] * (1 - pred_prev_f[1])   #F,1,2,3,
 for(a in 2:4){
       initN_sus[1, a] <- initO$antlerless * df_age_before_antlerless$proportion[a] * (1 - pred_prev_f[1])   #F,1,2,3,
 }
-
 initN_sus[1, 5] <- initO$antlerless * df_age_before_antlerless$proportion[5]/2 * (1 - pred_prev_f[[1]])  #4
 initN_sus[1, 6] <- initO$antlerless * df_age_before_antlerless$proportion[5]/2 * (1 - pred_prev_f[[1]])  #5
 initN_sus[1, 7] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (1 - pred_prev_f[[1]])  #6
@@ -121,13 +136,12 @@ initN_sus[2, 5] <- 1  # 4
 initN_sus[2, 6] <- 1  # 5
 initN_sus[2, 7] <- 1  # 6+
 
-#infected initial population
+###infected initial population
 ###antlerless
 initN_inf[1, 1] <- initO$antlerless * .5 * df_age_before_antlerless$proportion[1] * (pred_prev_f[1])   #F,1,2,3,
 for(a in 2:4){
       initN_inf[1, a] <- initO$antlerless * df_age_before_antlerless$proportion[a] * (pred_prev_f[1])   #F,1,2,3,
 }
-
 initN_inf[1, 5] <- initO$antlerless * df_age_before_antlerless$proportion[5]/2 * (pred_prev_f[[1]])  #4
 initN_inf[1, 6] <- initO$antlerless * df_age_before_antlerless$proportion[5]/2 * (pred_prev_f[[1]])  #5
 initN_inf[1, 7] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (pred_prev_f[[1]])  #6
@@ -144,16 +158,56 @@ initN_inf[2, 5] <- 1  # 4
 initN_inf[2, 6] <- 1  # 5
 initN_inf[2, 7] <- 1  # 6+
 
-
-initN_sus[1,]
-initN_sus[2,]
-initN_inf[1,]
-initN_inf[2,]
-
 f_logpop_sus <- log(initN_sus[1,])
 f_logpop_inf <- log(initN_inf[1,])
 m_logpop_sus <- log(initN_sus[2,1:n_agem])
 m_logpop_inf <- log(initN_inf[2,1:n_agem])
+
+
+
+
+# Ototal from SAK estimate
+initO <- df_pop_estimate$total[3] 
+
+
+
+
+
+
+
+
+
+
+
+########################################
+###
+### Earn-A-Buck (EAB correction factor)
+###
+########################################
+
+
+antlerless_corr <- c(1.55, 2.39)
+mn_antlerless <- mean(antlerless_corr)
+var_antlerless  <- ((2.39 - 1.55) / 2) ^ 2
+
+antlered_corr <- c(.29, .36)
+mn_antlered <- mean(antlered_corr)
+var_antlered <- ((.36 - .29) / 2) ^ 2
+
+antlerless_param <- gamma_moments(mn_antlerless,var_antlerless)
+antlered_param <- gamma_moments(mn_antlered,var_antlered)
+
+png("correction_factors_hunterharvest.png")
+par(mfrow=c(2,1))
+hist(rgamma(10000,antlerless_param$alpha,antlerless_param$beta), main = "Antleress")
+hist(rgamma(10000,antlered_param$alpha,antlered_param$beta), main = "Antlered")
+dev.off()
+
+
+
+
+
+
 
 ########################################
 ###
@@ -289,21 +343,6 @@ for(y in 23:28) {
 #########################################################################
 
 ##########################################
-### moment matching functions
-##########################################
-
-# lognormal_moments <- function(barx,s){
-# 	mu <- log(barx / sqrt((s^2) / (barx^2) + 1))
-# 	sigma <- sqrt(log((s^2) / (barx^2) + 1))
-# 	return(list(mu=mu,sigma=sigma))
-# }
-
-gamma_moments <- function(mu,sigma){
-	alpha <- (mu^2)/(sigma^2)
-	beta <- mu/(sigma^2)
-	return(list(alpha=alpha,beta=beta))
-}
-##########################################
 ### calculate moments 
 ##########################################
 
@@ -375,7 +414,7 @@ which(1994:2021 == 2017)
 
 ### creating the long vector of period effects
 # load("datafiles/period_effect_survival.Rdata")
-load("~/Documents/integrate_s_foi/s_foi_v3/mcmcout.Rdata")
+# load("~/Documents/integrate_s_foi/s_foi_v3/mcmcout.Rdata")
 # age_effect_surv <- mcmcout$summary$all.chains[grep("sus_age_effect",rownames(mcmcout$summary$all.chains)), 1]
 # period_effect_surv <- mcmcout$summary$all.chains[grep("sus_period_effect",rownames(mcmcout$summary$all.chains)),1]
 # sus_beta0_surv <- mcmcout$summary$all.chains[grep("sus_beta0",rownames(mcmcout$summary$all.chains)),1]
@@ -405,16 +444,10 @@ load("~/Documents/integrate_s_foi/s_foi_v3/mcmcout.Rdata")
 
 load("datafiles/period_effect_survival.Rdata")
 load("datafiles/age_effect_survival.Rdata")
-# load("datafiles/sus_beta0_survival.Rdata")
-# load("datafiles/sus_beta_sex_survival.Rdata")
-# load("datafiles/inf_beta0_survival.Rdata")
-# load("datafiles/inf_beta_sex_survival.Rdata")
-
-sus_beta0_surv <- -5
-inf_beta0_surv <- -3
-sus_beta_sex_survival <- -.2
-inf_beta_sex_survival <- -.7
-
+load("datafiles/sus_beta0_survival.Rdata")
+load("datafiles/sus_beta_sex_survival.Rdata")
+load("datafiles/inf_beta0_survival.Rdata")
+load("datafiles/inf_beta_sex_survival.Rdata")
 nT_age_surv <- length(age_effect_survival)
 nT_period_surv <- length(period_effect_survival)
 
