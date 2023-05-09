@@ -577,13 +577,12 @@ fawndoe_df <- fawndoe_df[fawndoe_df$year>1993,]
 ### checks okay
 
 ###
-### Initial values
+### Loading SAK model estimates for overall total population size initial values hyper prior
 ###
 
-#initial popsize by sex and age class, just using the first year of aged data...
-#but we should do this better
-# logN <- log(Cage[1,,])
-#the first year has 0 for males in the oldest age class, which is -Inf
-#so setting it to 0, which is equivalent to popsize of 1, in that age class
+filepath <- "~/Documents/Data/Harvest/"
+df_sak <- read.csv(paste0(filepath,"Total_pop_size_UNIT.csv"))
 
+# df_sak
 
+# save(df_sak,file="datafiles/df_sak.Rdata")
