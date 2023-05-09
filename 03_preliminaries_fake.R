@@ -109,59 +109,178 @@ pred_prev_m
 ###
 ########################################
 
-### Total population initialized from 1993
-initO <- df_harvest[df_harvest$year==1993,c(3,2)]
+### Total population initialized from SAK estimate from 1994
+init0 <- c()
+init0$female <- sex_ratio_early * df_sak$total[df_sak$Year == 1994]
+init0$male <- (1 - sex_ratio_early) * df_sak$total[df_sak$Year == 1994]
 initN_sus <- array(0, dim = c(n_sex,n_agef))
 initN_inf <- array(0, dim = c(n_sex,n_agef))
 
 ###susceptible initial population
-###antlerless
-initN_sus[1, 1] <- initO$antlerless * .5 * df_age_before_antlerless$proportion[1] * (1 - pred_prev_f[1])   #F,1,2,3,
+###females
+initN_sus[1, 1] <- init0$female *
+                   .5 *
+                   df_age_before_antlerless$proportion[1] *
+                   (1 - pred_prev_f[1])   #F
 for(a in 2:4){
-      initN_sus[1, a] <- initO$antlerless * df_age_before_antlerless$proportion[a] * (1 - pred_prev_f[1])   #F,1,2,3,
+      initN_sus[1, a] <- init0$female *
+                         df_age_before_antlerless$proportion[a] *
+                         (1 - pred_prev_f[1])   #1,2,3
 }
-initN_sus[1, 5] <- initO$antlerless * df_age_before_antlerless$proportion[5]/2 * (1 - pred_prev_f[[1]])  #4
-initN_sus[1, 6] <- initO$antlerless * df_age_before_antlerless$proportion[5]/2 * (1 - pred_prev_f[[1]])  #5
-initN_sus[1, 7] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (1 - pred_prev_f[[1]])  #6
-initN_sus[1, 8] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (1 - pred_prev_f[[1]]) #7
-initN_sus[1, 9] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (1 - pred_prev_f[[1]]) #8
-initN_sus[1, 10] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (1 - pred_prev_f[[1]])  #9+,same as 6-8
+initN_sus[1, 5] <- init0$female * 
+                   df_age_before_antlerless$proportion[5] *
+                   (2/3) *
+                   (1 - pred_prev_f[[1]])  #4
+initN_sus[1, 6] <- init0$female *
+                   df_age_before_antlerless$proportion[5] *
+                   (1/3) * (1 - pred_prev_f[[1]])  #5
+initN_sus[1, 7] <- init0$female *
+                   df_age_before_antlerless$proportion[6] * 
+                   (1/2) * 
+                   (1 - pred_prev_f[[1]])  #6
+initN_sus[1, 8] <- init0$female *
+                   df_age_before_antlerless$proportion[6] *
+                   (1/4) *
+                   (1 - pred_prev_f[[1]]) #7
+initN_sus[1, 9] <- init0$female * 
+                   df_age_before_antlerless$proportion[6]*
+                   (1/6) *
+                   (1 - pred_prev_f[[1]]) #8
+initN_sus[1, 10] <- init0$female *
+                    df_age_before_antlerless$proportion[6] *
+                    (1/12) *
+                    (1 - pred_prev_f[[1]])  #9+,same as 6-8, decaying from 6-8
 
 ###antlered
-initN_sus[2, 1] <- initO$antlerless * .5 * df_age_before_antlerless$proportion[1] * (1 - pred_prev_m[1])  #1,2,3,
+initN_sus[2, 1] <- init0$female *
+                   .5 *
+                   df_age_before_antlerless$proportion[1] *
+                   (1 - pred_prev_m[1]) 
 for(a in 2:4){
-      initN_sus[2, a] <- initO$antlered * df_age_before_antlered$proportion[a-1] * (1 - pred_prev_m[1])  #1,2,3,
+      initN_sus[2, a] <- init0$male *
+                         df_age_before_antlered$proportion[a - 1] *
+                         (1 - pred_prev_m[1])  #1,2,3,
 }
-initN_sus[2, 5] <- 1  # 4
-initN_sus[2, 6] <- 1  # 5
-initN_sus[2, 7] <- 1  # 6+
+initN_sus[2, 5] <- 1 * (1 - pred_prev_m[1]) # 4
+initN_sus[2, 6] <- 1 * (1 - pred_prev_m[1]) # 5
+initN_sus[2, 7] <- 1 * (1 - pred_prev_m[1]) # 6+
 
+####################################
 ###infected initial population
+####################################
+
 ###antlerless
-initN_inf[1, 1] <- initO$antlerless * .5 * df_age_before_antlerless$proportion[1] * (pred_prev_f[1])   #F,1,2,3,
+initN_inf[1, 1] <- init0$female *
+                   .5 *
+                   df_age_before_antlerless$proportion[1] *
+                   (pred_prev_f[1])   #F
 for(a in 2:4){
-      initN_inf[1, a] <- initO$antlerless * df_age_before_antlerless$proportion[a] * (pred_prev_f[1])   #F,1,2,3,
+      initN_inf[1, a] <- init0$female *
+                         df_age_before_antlerless$proportion[a] *
+                         (pred_prev_f[1])   #1,2,3
 }
-initN_inf[1, 5] <- initO$antlerless * df_age_before_antlerless$proportion[5]/2 * (pred_prev_f[[1]])  #4
-initN_inf[1, 6] <- initO$antlerless * df_age_before_antlerless$proportion[5]/2 * (pred_prev_f[[1]])  #5
-initN_inf[1, 7] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (pred_prev_f[[1]])  #6
-initN_inf[1, 8] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (pred_prev_f[[1]]) #7
-initN_inf[1, 9] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (pred_prev_f[[1]]) #8
-initN_inf[1, 10] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (pred_prev_f[[1]])  # 9+, set to same as 6-8
+initN_inf[1, 5] <- init0$female *
+                   df_age_before_antlerless$proportion[5] *
+                   (2 / 3) *
+                   (pred_prev_f[[1]])  #4
+initN_inf[1, 6] <- init0$female * 
+                   df_age_before_antlerless$proportion[5] *
+                   (1 / 3) *
+                   (pred_prev_f[[1]])  #5
+initN_inf[1, 7] <- init0$female *
+                   df_age_before_antlerless$proportion[6] *
+                   (1 / 2) *
+                   (pred_prev_f[[1]])  #6
+initN_inf[1, 8] <- init0$female *
+                   df_age_before_antlerless$proportion[6] *
+                   (1 / 4) *
+                   (pred_prev_f[[1]]) #7
+initN_inf[1, 9] <- init0$female *
+                   df_age_before_antlerless$proportion[6] *
+                   (1 / 6) *
+                   (pred_prev_f[[1]]) #8
+initN_inf[1, 10] <- init0$female *
+                    df_age_before_antlerless$proportion[6] *
+                    (1 / 12) *
+                    (pred_prev_f[[1]])  # 9+, set as same proportion from 6-8
 
 ###antlered
-initN_inf[2, 1] <- initO$antlerless * .5 * df_age_before_antlerless$proportion[1] * (pred_prev_m[1])  #F
-for(a in 2:4){
-      initN_inf[2, a] <- initO$antlered * df_age_before_antlered$proportion[a-1] * (pred_prev_m[1])  #1,2,3,
+initN_inf[2, 1] <- init0$female *
+                   .5 *
+                   df_age_before_antlerless$proportion[1] *
+                   (pred_prev_m[1])  #F
+for(a in 2:4) {
+      initN_inf[2, a] <- init0$male *
+                         df_age_before_antlered$proportion[a - 1] *
+                         (pred_prev_m[1])  #1,2,3
 }
-initN_inf[2, 5] <- 1  # 4
-initN_inf[2, 6] <- 1  # 5
-initN_inf[2, 7] <- 1  # 6+
+initN_inf[2, 5] <- 1  * (pred_prev_m[1])# 4
+initN_inf[2, 6] <- 1  * (pred_prev_m[1])# 5
+initN_inf[2, 7] <- 1  * (pred_prev_m[1])# 6+
 
 f_logpop_sus <- log(initN_sus[1,])
 f_logpop_inf <- log(initN_inf[1,])
 m_logpop_sus <- log(initN_sus[2,1:n_agem])
 m_logpop_inf <- log(initN_inf[2,1:n_agem])
+
+
+
+
+
+
+### Total population initialized from 1993
+# initO <- df_harvest[df_harvest$year==1993,c(3,2)]
+# initN_sus <- array(0, dim = c(n_sex,n_agef))
+# initN_inf <- array(0, dim = c(n_sex,n_agef))
+
+###susceptible initial population
+###antlerless
+# initN_sus[1, 1] <- initO$antlerless * .5 * df_age_before_antlerless$proportion[1] * (1 - pred_prev_f[1])   #F,1,2,3,
+# for(a in 2:4){
+#       initN_sus[1, a] <- initO$antlerless * df_age_before_antlerless$proportion[a] * (1 - pred_prev_f[1])   #F,1,2,3,
+# }
+# initN_sus[1, 5] <- initO$antlerless * df_age_before_antlerless$proportion[5]/2 * (1 - pred_prev_f[[1]])  #4
+# initN_sus[1, 6] <- initO$antlerless * df_age_before_antlerless$proportion[5]/2 * (1 - pred_prev_f[[1]])  #5
+# initN_sus[1, 7] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (1 - pred_prev_f[[1]])  #6
+# initN_sus[1, 8] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (1 - pred_prev_f[[1]]) #7
+# initN_sus[1, 9] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (1 - pred_prev_f[[1]]) #8
+# initN_sus[1, 10] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (1 - pred_prev_f[[1]])  #9+,same as 6-8
+
+# ###antlered
+# initN_sus[2, 1] <- initO$antlerless * .5 * df_age_before_antlerless$proportion[1] * (1 - pred_prev_m[1])  #1,2,3,
+# for(a in 2:4){
+#       initN_sus[2, a] <- initO$antlered * df_age_before_antlered$proportion[a-1] * (1 - pred_prev_m[1])  #1,2,3,
+# }
+# initN_sus[2, 5] <- 1  # 4
+# initN_sus[2, 6] <- 1  # 5
+# initN_sus[2, 7] <- 1  # 6+
+
+# ###infected initial population
+# ###antlerless
+# initN_inf[1, 1] <- initO$antlerless * .5 * df_age_before_antlerless$proportion[1] * (pred_prev_f[1])   #F,1,2,3,
+# for(a in 2:4){
+#       initN_inf[1, a] <- initO$antlerless * df_age_before_antlerless$proportion[a] * (pred_prev_f[1])   #F,1,2,3,
+# }
+# initN_inf[1, 5] <- initO$antlerless * df_age_before_antlerless$proportion[5]/2 * (pred_prev_f[[1]])  #4
+# initN_inf[1, 6] <- initO$antlerless * df_age_before_antlerless$proportion[5]/2 * (pred_prev_f[[1]])  #5
+# initN_inf[1, 7] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (pred_prev_f[[1]])  #6
+# initN_inf[1, 8] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (pred_prev_f[[1]]) #7
+# initN_inf[1, 9] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (pred_prev_f[[1]]) #8
+# initN_inf[1, 10] <- initO$antlerless * df_age_before_antlerless$proportion[6]/3 * (pred_prev_f[[1]])  # 9+, set to same as 6-8
+
+# ###antlered
+# initN_inf[2, 1] <- initO$antlerless * .5 * df_age_before_antlerless$proportion[1] * (pred_prev_m[1])  #F
+# for(a in 2:4){
+#       initN_inf[2, a] <- initO$antlered * df_age_before_antlered$proportion[a-1] * (pred_prev_m[1])  #1,2,3,
+# }
+# initN_inf[2, 5] <- 1  # 4
+# initN_inf[2, 6] <- 1  # 5
+# initN_inf[2, 7] <- 1  # 6+
+
+# f_logpop_sus <- log(initN_sus[1,])
+# f_logpop_inf <- log(initN_inf[1,])
+# m_logpop_sus <- log(initN_sus[2,1:n_agem])
+# m_logpop_inf <- log(initN_inf[2,1:n_agem])
 
 
 
