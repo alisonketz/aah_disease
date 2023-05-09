@@ -567,22 +567,3 @@ fawndoe_df <- fawndoe_df[fawndoe_df$year>1993,]
 
 # fec_init <- c(fawndoe_df$overall_fd,df_camtrap_fd$fdr_mean)
 
-####################################################################################
-###
-### Plotting DMU total harvest data vs County total harvest data
-###
-#####################################################################################
-
-### Ototal == Ogun+Obow 
-### checks okay
-
-###
-### Loading SAK model estimates for overall total population size initial values hyper prior
-###
-
-filepath <- "~/Documents/Data/Harvest/"
-df_sak <- read.csv(paste0(filepath,"Total_pop_size_UNIT.csv"))
-
-# df_sak
-
-# save(df_sak,file="datafiles/df_sak.Rdata")

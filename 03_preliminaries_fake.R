@@ -111,8 +111,8 @@ pred_prev_m
 
 ### Total population initialized from SAK estimate from 1994
 init0 <- c()
-init0$female <- sex_ratio_early * df_sak$total[df_sak$Year == 1994]
-init0$male <- (1 - sex_ratio_early) * df_sak$total[df_sak$Year == 1994]
+init0$female <- sex_ratio_early * df_pop_estimate$total[df_pop_estimate$Year == 1994]
+init0$male <- (1 - sex_ratio_early) * df_pop_estimate$total[df_pop_estimate$Year == 1994]
 initN_sus <- array(0, dim = c(n_sex,n_agef))
 initN_inf <- array(0, dim = c(n_sex,n_agef))
 
@@ -284,20 +284,6 @@ m_logpop_inf <- log(initN_inf[2,1:n_agem])
 
 
 
-
-# Ototal from SAK estimate
-initO <- df_pop_estimate$total[3] 
-
-
-
-
-
-
-
-
-
-
-
 ########################################
 ###
 ### Earn-A-Buck (EAB correction factor)
@@ -321,11 +307,6 @@ par(mfrow=c(2,1))
 hist(rgamma(10000,antlerless_param$alpha,antlerless_param$beta), main = "Antleress")
 hist(rgamma(10000,antlered_param$alpha,antlered_param$beta), main = "Antlered")
 dev.off()
-
-
-
-
-
 
 
 ########################################
