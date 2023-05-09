@@ -30,7 +30,7 @@ calc_surv_aah <- nimble::nimbleFunction(
     ###################################################################
 
     # s_aah[sex,age,period]
-1   S0 <- nimArray(NA, c(2, n_agef, n_year))
+    S0 <- nimArray(NA, c(2, n_agef, n_year))
     s_aah <- nimArray(NA, c(2, n_agef, n_year))
 		
     # for age 1
