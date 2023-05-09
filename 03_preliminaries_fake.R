@@ -444,10 +444,16 @@ which(1994:2021 == 2017)
 
 load("datafiles/period_effect_survival.Rdata")
 load("datafiles/age_effect_survival.Rdata")
-load("datafiles/sus_beta0_survival.Rdata")
-load("datafiles/sus_beta_sex_survival.Rdata")
-load("datafiles/inf_beta0_survival.Rdata")
-load("datafiles/inf_beta_sex_survival.Rdata")
+# load("datafiles/sus_beta0_survival.Rdata")
+# load("datafiles/sus_beta_sex_survival.Rdata")
+# load("datafiles/inf_beta0_survival.Rdata")
+# load("datafiles/inf_beta_sex_survival.Rdata")
+
+sus_beta0_survival <- -5
+sus_beta_sex_survival <- -.5
+inf_beta0_survival <- -3
+inf_beta_sex_survival <- -1
+
 nT_age_surv <- length(age_effect_survival)
 nT_period_surv <- length(period_effect_survival)
 
@@ -512,7 +518,7 @@ intvl_step_yr <- 52
 
 load("datafiles/d_fit_season.Rdata")
 
-d_fit_season$yr_end
+# d_fit_season$yr_end
 
 ################################################################
 ###
