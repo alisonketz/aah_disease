@@ -567,3 +567,14 @@ fawndoe_df <- fawndoe_df[fawndoe_df$year>1993,]
 
 # fec_init <- c(fawndoe_df$overall_fd,df_camtrap_fd$fdr_mean)
 
+####################################################################################
+###
+### Loading data on occurance of earn-a-buck
+###
+#####################################################################################
+
+filepath <- "~/Documents/Data/Harvest/"
+df_eab <- read.csv(paste0(filepath,"eab_present.csv"))
+
+# df_eab$EAB
+# save(df_eab,file="datafiles/df_eab.Rdata")

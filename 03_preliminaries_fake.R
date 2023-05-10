@@ -632,3 +632,26 @@ p_ng_f <- p_hunt$p_ng_f
 p_gun_f <- p_hunt$p_gun_f
 p_ng_m <- p_hunt$p_ng_m
 p_gun_m <- p_hunt$p_gun_m
+
+
+################################################################
+###
+### Load eab prior allocation
+###
+#################################################################
+
+# antlerless_correction = (1.55)
+# Sd = (.55*(2.3/2.04) - .55*(1.79/2.04))/2 =  0.06875
+# antlered_correction = (1 -.29)
+# Sd = -(.29*(-.49/-.6) - .29*(-.7/-.6))/2 = 0.05075
+
+
+eab_anterless_alpha <- gamma_moments(1.55, .06875^2)$alpha
+eab_anterless_beta <- gamma_moments(1.55, .06875^2)$beta
+
+eab_antlered_alpha <- gamma_moments(.71, .05075^2)$alpha
+eab_antlered_beta <- gamma_moments(.71, .05075^2)$beta
+
+
+# hist(rgamma(10000,eab_anterless_alpha,eab_anterless_beta))
+# hist(rgamma(10000,eab_antlered_alpha,eab_antlered_beta))

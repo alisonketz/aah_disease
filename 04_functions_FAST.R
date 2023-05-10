@@ -293,66 +293,65 @@ calc_surv_harvest <- nimble::nimbleFunction(
 })
 Ccalc_surv_harvest <- compileNimble(calc_surv_harvest)
 
-# starttime <- Sys.time()
-# sh_sus_fast <- Ccalc_surv_harvest(
-# 		#nT_age = nT_age_surv,
-#         #nT_period = nT_period_surv,
-#         beta0 = sus_beta0_survival,
-#         beta_sex = sus_beta_sex_survival,
-#         age_effect = age_effect_survival,
-#         period_effect = period_effect_survival,
-#         #yr_end_indx = d_fit_season$yr_end,
-#         intvl_step_yr = intvl_step_yr,
-#         n_year = n_year,
-#         n_agef = n_agef,
-#         n_agem = n_agem,
-#         #pre_hunt_end = d_fit_season$pre_hunt_end,
-#         ng_start = d_fit_season$ng_start,
-#         gun_start = d_fit_season$gun_start,
-#         #gun_end = d_fit_season$gun_end,
-#         gun_end = d_fit_season$gun_start,
-#         ng_end = d_fit_season$ng_end,
-#         yr_start = d_fit_season$yr_start,
-#         yr_end = d_fit_season$yr_end,
-# 		#p_vec_f = p_vec_f,
-# 		#p_vec_m = p_vec_m
-#         p_nogun_f = p_ng_f,
-#         p_nogun_m = p_ng_m,
-#         p_gun_f = p_gun_f,
-#         p_gun_m = p_gun_m
-#         )
+starttime <- Sys.time()
+sh_sus_fast <- Ccalc_surv_harvest(
+		#nT_age = nT_age_surv,
+        #nT_period = nT_period_surv,
+        beta0 = sus_beta0_survival,
+        beta_sex = sus_beta_sex_survival,
+        age_effect = age_effect_survival,
+        period_effect = period_effect_survival,
+        #yr_end_indx = d_fit_season$yr_end,
+        intvl_step_yr = intvl_step_yr,
+        n_year = n_year,
+        n_agef = n_agef,
+        n_agem = n_agem,
+        #pre_hunt_end = d_fit_season$pre_hunt_end,
+        ng_start = d_fit_season$ng_start,
+        gun_start = d_fit_season$gun_start,
+        gun_end = d_fit_season$gun_end,
+        ng_end = d_fit_season$ng_end,
+        yr_start = d_fit_season$yr_start,
+        yr_end = d_fit_season$yr_end,
+		#p_vec_f = p_vec_f,
+		#p_vec_m = p_vec_m
+        p_nogun_f = p_ng_f,
+        p_nogun_m = p_ng_m,
+        p_gun_f = p_gun_f,
+        p_gun_m = p_gun_m
+        )
 # (endtime3fast <- Sys.time() - starttime)
 
 
-# starttime <- Sys.time()
-# sh_inf_fast <- Ccalc_surv_harvest(
-# 		#nT_age = nT_age_surv,
-#         #nT_period = nT_period_surv,
-#         beta0 = inf_beta0_survival,
-#         beta_sex = inf_beta_sex_survival,
-#         age_effect = age_effect_survival,
-#         period_effect = period_effect_survival,
-#         #yr_end_indx = d_fit_season$yr_end,
-#         intvl_step_yr = intvl_step_yr,
-#         n_year = n_year,
-#         n_agef = n_agef,
-#         n_agem = n_agem,
-#         #pre_hunt_end = d_fit_season$pre_hunt_end,
-#         ng_start = d_fit_season$ng_start,
-#         gun_start = d_fit_season$gun_start,
-#         #gun_end = d_fit_season$gun_end,
-#         gun_end = d_fit_season$gun_start,
-#         ng_end = d_fit_season$ng_end,
-#         yr_start = d_fit_season$yr_start,
-#         yr_end = d_fit_season$yr_end,
-# 		#p_vec_f = p_vec_f,
-# 		#p_vec_m = p_vec_m
-#         p_nogun_f = p_ng_f,
-#         p_nogun_m = p_ng_m,
-#         p_gun_f = p_gun_f,
-#         p_gun_m = p_gun_m
-#         )
-# (endtime4fast <- Sys.time() - starttime)
+starttime <- Sys.time()
+sh_inf_fast <- Ccalc_surv_harvest(
+		#nT_age = nT_age_surv,
+        #nT_period = nT_period_surv,
+        beta0 = inf_beta0_survival,
+        beta_sex = inf_beta_sex_survival,
+        age_effect = age_effect_survival,
+        period_effect = period_effect_survival,
+        #yr_end_indx = d_fit_season$yr_end,
+        intvl_step_yr = intvl_step_yr,
+        n_year = n_year,
+        n_agef = n_agef,
+        n_agem = n_agem,
+        #pre_hunt_end = d_fit_season$pre_hunt_end,
+        ng_start = d_fit_season$ng_start,
+        gun_start = d_fit_season$gun_start,
+        #gun_end = d_fit_season$gun_end,
+        gun_end = d_fit_season$gun_end,
+        ng_end = d_fit_season$ng_end,
+        yr_start = d_fit_season$yr_start,
+        yr_end = d_fit_season$yr_end,
+		#p_vec_f = p_vec_f,
+		#p_vec_m = p_vec_m
+        p_nogun_f = p_ng_f,
+        p_nogun_m = p_ng_m,
+        p_gun_f = p_gun_f,
+        p_gun_m = p_gun_m
+        )
+(endtime4fast <- Sys.time() - starttime)
 
 
 # sh_sus[1:2,1:n_agef,1:n_year] <- Ccalc_surv_harvest(nT_age = nT_age_surv,
@@ -458,8 +457,9 @@ calc_infect_prob <- nimbleFunction(
 # save(endtime5fast,file="endtime5fast.Rdata")
 
 
-
 load("sn_sus_slow.RData")
 load("sn_inf_slow.RData")
 load("sh_sus_slow.RData")
 load("sh_inf_slow.RData")
+
+

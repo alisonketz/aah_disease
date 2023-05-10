@@ -112,18 +112,18 @@ modelcode <- nimbleCode({
     
     # sn_inf ~ dbeta(150,100)
     # tau_sn_inf ~ dgamma(10, 1)
-  #   mu_sn_inf[1] ~ dnorm(cloglog(.2), 10)
-  #   mu_sn_inf[2] ~ dnorm(cloglog(.3), 10)
-  #   for (t in 1:n_year) {
-  #       for(a in 1:n_agef){
-  #         cll_sn_inf[1, a, t] ~ dnorm(mu_sn_inf[1], 10)
-  #         sn_inf[1, a, t] <- exp(-exp(cll_sn_inf[1, a, t]))
-  #       }
-  #       for(a in 1:n_agem){
-  #           cll_sn_inf[2, a, t] ~ dnorm(mu_sn_inf[2], 10)
-  #           sn_inf[2, a, t] <- exp(-exp(cll_sn_inf[2, a, t]))
-  #       }
-  #   }
+    # mu_sn_inf[1] ~ dnorm(cloglog(.2), 10)
+    # mu_sn_inf[2] ~ dnorm(cloglog(.3), 10)
+    # for (t in 1:n_year) {
+    #     for(a in 1:n_agef){
+    #       cll_sn_inf[1, a, t] ~ dnorm(mu_sn_inf[1], 10)
+    #       sn_inf[1, a, t] <- exp(-exp(cll_sn_inf[1, a, t]))
+    #     }
+    #     for(a in 1:n_agem){
+    #         cll_sn_inf[2, a, t] ~ dnorm(mu_sn_inf[2], 10)
+    #         sn_inf[2, a, t] <- exp(-exp(cll_sn_inf[2, a, t]))
+    #     }
+    # }
 
 
   # ###################################################
@@ -132,18 +132,18 @@ modelcode <- nimbleCode({
 
   #   # sh_sus ~ dbeta(200,100)
   #   # tau_sh_sus ~ dgamma(1, 1)
-  #   mu_sh_sus[1] ~ dnorm(cloglog(.4), 10)
-  #   mu_sh_sus[2] ~ dnorm(cloglog(.5), 10)
-  #   for (t in 1:n_year) {
-  #       for(a in 1:n_agef) {
-  #         cll_sh_sus[1, a, t] ~ dnorm(mu_sh_sus[1], 10)
-  #         sh_sus[1, a, t] <- exp(-exp(cll_sh_sus[1, a, t]))
-  #       }
-  #       for(a in 1:n_agem) {
-  #           cll_sh_sus[2, a, t] ~ dnorm(mu_sh_sus[2], 10)
-  #           sh_sus[2, a, t] <- exp(-exp(cll_sh_sus[2, a, t]))
-  #       }
-  #   }
+    # mu_sh_sus[1] ~ dnorm(cloglog(.4), 10)
+    # mu_sh_sus[2] ~ dnorm(cloglog(.5), 10)
+    # for (t in 1:n_year) {
+    #     for(a in 1:n_agef) {
+    #       cll_sh_sus[1, a, t] ~ dnorm(mu_sh_sus[1], 10)
+    #       sh_sus[1, a, t] <- exp(-exp(cll_sh_sus[1, a, t]))
+    #     }
+    #     for(a in 1:n_agem) {
+    #         cll_sh_sus[2, a, t] ~ dnorm(mu_sh_sus[2], 10)
+    #         sh_sus[2, a, t] <- exp(-exp(cll_sh_sus[2, a, t]))
+    #     }
+    # }
 
   # ###################################################
   # #### Hunting Season Survival Infected
@@ -151,31 +151,31 @@ modelcode <- nimbleCode({
 
   #   # sh_inf ~ dbeta(150, 100)
   #   # tau_sh_inf ~ dgamma(1, 1)
-  #   mu_sh_inf[1] ~ dnorm(cloglog(.4), 10)
-  #   mu_sh_inf[2] ~ dnorm(cloglog(.5), 10)
-  #   for (t in 1:(n_year)) {
-  #       for(a in 1:n_agef) {
-  #         cll_sh_inf[1, a, t] ~ dnorm(mu_sh_inf[1], 10)
-  #         sh_inf[1, a, t] <- exp(-exp(cll_sh_inf[1, a, t]))
-  #       }
-  #       for(a in 1:n_agem) {
-  #           cll_sh_inf[2, a, t] ~ dnorm(mu_sh_inf[2], 10)
-  #           sh_inf[2, a, t] <- exp(-exp(cll_sh_inf[2, a, t]))
-  #       }
-  #   }
+    # mu_sh_inf[1] ~ dnorm(cloglog(.4), 10)
+    # mu_sh_inf[2] ~ dnorm(cloglog(.5), 10)
+    # for (t in 1:(n_year)) {
+    #     for(a in 1:n_agef) {
+    #       cll_sh_inf[1, a, t] ~ dnorm(mu_sh_inf[1], 10)
+    #       sh_inf[1, a, t] <- exp(-exp(cll_sh_inf[1, a, t]))
+    #     }
+    #     for(a in 1:n_agem) {
+    #         cll_sh_inf[2, a, t] ~ dnorm(mu_sh_inf[2], 10)
+    #         sh_inf[2, a, t] <- exp(-exp(cll_sh_inf[2, a, t]))
+    #     }
+    # }
 
 
   ###################################################
   #### Overall Survival Susceptibles
   ###################################################
 
-  sn_sus[1:2,1:n_agef,1:n_year] <- calc_surv_aah(nT_age = nT_age_surv,
-          nT_period = nT_period_surv,
+  sn_sus[1:2,1:n_agef,1:n_year] <- calc_surv_aah(
           beta0 = sus_beta0_survival,
           beta_sex = sus_beta_sex_survival,
           age_effect = age_effect_survival[1:nT_age_surv],
           period_effect = period_effect_survival[1:nT_period_surv],
-          yr_end_indx = yr_end_indx[1:n_year],
+          yr_start = yr_start[1:n_year],
+          yr_end = yr_end[1:n_year],
           intvl_step_yr = intvl_step_yr,
           n_year = n_year,
           n_agef = n_agef,
@@ -185,13 +185,13 @@ modelcode <- nimbleCode({
   #### Overall Survival CWD Infected
   ###################################################
 
-  sn_inf[1:2,1:n_agef,1:n_year] <- calc_surv_aah(nT_age = nT_age_surv,
-          nT_period = nT_period_surv,
+  sn_inf[1:2,1:n_agef,1:n_year] <- calc_surv_aah(
           beta0 = inf_beta0_survival,
           beta_sex = inf_beta_sex_survival,
           age_effect = age_effect_survival[1:nT_age_surv],
           period_effect = period_effect_survival[1:nT_period_surv],
-          yr_end_indx = yr_end_indx[1:n_year],
+          yr_start = yr_start[1:n_year],
+          yr_end = yr_end[1:n_year],
           intvl_step_yr = intvl_step_yr,
           n_year = n_year,
           n_agef = n_agef,
@@ -201,18 +201,15 @@ modelcode <- nimbleCode({
   #### Hunting Survival Susceptibles
   ###################################################
 
-  sh_sus[1:2,1:n_agef,1:n_year] <- calc_surv_harvest(nT_age = nT_age_surv,
-          nT_period = nT_period_surv,
+  sh_sus[1:2,1:n_agef,1:n_year] <- calc_surv_harvest(
           beta0 = sus_beta0_survival,
           beta_sex = sus_beta_sex_survival,
           age_effect = age_effect_survival[1:nT_age_surv],
           period_effect = period_effect_survival[1:nT_period_surv],
-          yr_end_indx = yr_end_indx[1:n_year],
           intvl_step_yr = intvl_step_yr,
           n_year = n_year,
           n_agef = n_agef,
           n_agem = n_agem,
-          pre_hunt_end = pre_hunt_end[1:n_year],
           ng_start = ng_start[1:n_year],
           gun_start = gun_start[1:n_year],
           gun_end = gun_end[1:n_year],
@@ -229,18 +226,15 @@ modelcode <- nimbleCode({
   #### Hunting Survival Infected
   ###################################################
 
-  sh_inf[1:2,1:n_agef,1:n_year] <- calc_surv_harvest(nT_age = nT_age_surv,
-          nT_period = nT_period_surv,
+  sh_inf[1:2,1:n_agef,1:n_year] <- calc_surv_harvest(
           beta0 = inf_beta0_survival,
           beta_sex = inf_beta_sex_survival,
           age_effect = age_effect_survival[1:nT_age_surv],
           period_effect = period_effect_survival[1:nT_period_surv],
-          yr_end_indx = yr_end_indx[1:n_year],
           intvl_step_yr = intvl_step_yr,
           n_year = n_year,
           n_agef = n_agef,
           n_agem = n_agem,
-          pre_hunt_end = pre_hunt_end[1:n_year],
           ng_start = ng_start[1:n_year],
           gun_start = gun_start[1:n_year],
           gun_end = gun_end[1:n_year],
@@ -261,11 +255,26 @@ modelcode <- nimbleCode({
   psi[1:2,1:n_agef,1:n_year] <- calc_infect_prob(age_lookup_f = age_lookup_f[1:Nage_lookup],
                         age_lookup_m = age_lookup_m[1:Nage_lookup],
                         Nage_lookup = Nage_lookup,
-                        f_age = f_age_foi[1:n_agef],
-                        m_age = m_age_foi[1:n_agem],
+                        f_age = f_age_foi[1:n_ageclassf],
+                        m_age = m_age_foi[1:n_ageclassm],
                         f_period = f_period_foi[1:n_year],
                         m_period = m_period_foi[1:n_year],
                         nT_period_foi = n_year)
+
+
+  ###################################################
+  #### Earn-a-buck correction factor
+  #### based on Van Deelen et al (2010)
+  ###################################################
+
+  eab_antlerless_temp ~ dgamma(eab_antlerless_alpha,eab_antlerless_beta)
+  eab_antlered_temp ~ dgamma(eab_antlered_alpha,eab_antlered_beta)
+
+  for(t in 1:n_year) {
+    eab_antlerless[t] <- eab_antlerless_temp ^ x_eab[t]
+    eab_antlered[t]  <- eab_antlered_temp ^ x_eab[t]
+  }
+
 
   ######################################################################
   ###
@@ -399,10 +408,11 @@ modelcode <- nimbleCode({
     }
 
     #Total Antlerless Harvest
-    mu_obs[1, t] <- sum(harv_pop[1, 1:n_agef, t]) + harv_pop[2, 1, t]#adding in male fawns
+    #adding in male fawns
+    mu_obs[1, t] <- eab_antlerless[t] * (sum(harv_pop[1, 1:n_agef, t]) + harv_pop[2, 1, t]) 
 
     #Total Antlered Harvest
-    mu_obs[2, t] <- sum(harv_pop[2, 2:n_agem, t])#excludes male fawns
+    mu_obs[2, t] <- eab_antlered[t] * sum(harv_pop[2, 2:n_agem, t])#excludes male fawns
 
     ###################################
     #Likelihood for overall total
@@ -471,7 +481,8 @@ nimData <- list(Cage_less = Cage_less,
                 obs_ct_fd_alpha = obs_ct_fd_alpha,
                 obs_ct_fd_beta = obs_ct_fd_beta,
                 Nfawn = fawndoe_df$overall_fawn,
-                Ndoe = fawndoe_df$overall_doe#,
+                Ndoe = fawndoe_df$overall_doe,
+                x_eab = df_eab$EAB#,
                 # cll_sn_sus = array(NA,c(2, n_agef, n_year)),
                 # cll_sn_inf = array(NA,c(2, n_agef, n_year)),
                 # cll_sh_sus = array(NA,c(2, n_agef, n_year)),
@@ -503,7 +514,6 @@ nimConsts <- list(
     inf_beta_sex_survival = inf_beta_sex_survival,
     nT_age_surv = nT_age_surv,
     nT_period_surv = nT_period_surv,
-    pre_hunt_end = d_fit_season$pre_hunt_end,
     ng_start = d_fit_season$ng_start,
     gun_start = d_fit_season$gun_start,
     gun_end = d_fit_season$gun_end,
@@ -517,10 +527,14 @@ nimConsts <- list(
     age_lookup_f = age_lookup_f,
     age_lookup_m = age_lookup_m,
     Nage_lookup = Nage_lookup,
-    f_age = f_age_foi,
-    m_age = m_age_foi,
-    f_period = f_period_foi,
-    m_period = m_period_foi
+    f_age_foi = f_age_foi,
+    m_age_foi = m_age_foi,
+    f_period_foi = f_period_foi,
+    m_period_foi = m_period_foi,
+    eab_antlerless_alpha = eab_anterless_alpha,
+    eab_antlerless_beta = eab_anterless_beta,
+    eab_antlered_alpha = eab_antlered_alpha,
+    eab_antlered_beta = eab_antlered_beta 
 )
 
 #Initial values
@@ -552,7 +566,9 @@ initsFun <- function()list(
   # fec = fec_init,
   fec_epsilon = fec_eps_init,#rnorm(n_year_fec_early, 0, sd = .01),
   mu_fec = rnorm(1, mu_fec_init, .01),
-  fec_prec_eps = runif(1, 5, 10)
+  fec_prec_eps = runif(1, 5, 10),
+  eab_anterless_temp = 1.55,
+  eab_antlered_temp = .71
 )
 nimInits <- initsFun()
 
@@ -605,7 +621,7 @@ nimMCMC <- buildMCMC(confMCMC)
 Cnim <- compileNimble(Rmodel)
 CnimMCMC <- compileNimble(nimMCMC, project = Rmodel)
 
-set.seed(121915911)
+set.seed(12191591)
 starttime <- Sys.time()
 mcmcout <- runMCMC(CnimMCMC,
                    niter = reps,
