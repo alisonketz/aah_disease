@@ -162,7 +162,7 @@ sn_sus_slow<- Ccalc_surv_aah(
 
 #[1:2,1:n_agef,1:n_year] 
 starttime <- Sys.time()
-sn_inf_slow<- Ccalc_surv_aah(
+sn_inf_slow <- Ccalc_surv_aah(
         nT_age = nT_age_surv,
         nT_period = nT_period_surv,
         beta0 = inf_beta0_survival,
@@ -397,9 +397,6 @@ sh_inf_slow <- Ccalc_surv_harvest(nT_age = nT_age_surv,
         )
 (endtime4 <- Sys.time() - starttime)
 
-save(sn_sus_slow,file="sn_sus_slow.RData")
-save(sn_inf_slow,file="sn_inf_slow.RData")
-
 #######################################################################
 ###
 ### Function to calculatw probability of infection
@@ -455,13 +452,12 @@ psi <- Ccalc_infect_prob(age_lookup_f = age_lookup_f,
 
 #######################################################################
 ###
-### Function to calculatw probability of infection
-### based on FOI age and period effects
-### Weekly Version
+### Print and save results
 ###
 #######################################################################
 
-sink("runtime_testing_fun.txt")
+
+sink("runtime_testing_fun_slow.txt")
 print(endtime1)
 print(endtime2)
 print(endtime3)
@@ -473,3 +469,22 @@ endtime1
 endtime2
 endtime3
 endtime4
+endtime5
+
+
+save(sn_sus_slow,file="sn_sus_slow.RData")
+save(sn_inf_slow,file="sn_inf_slow.RData")
+save(sh_sus_slow,file="sh_sus_slow.RData")
+save(sh_inf_slow,file="sh_inf_slow.RData")
+
+
+(tot_slow <- endtime1 + endtime2 + endtime3+ endtime4)
+
+(((tot_slow*100000)/60)/24) + (((endtime5*100000)/60)/60)/24
+
+
+save(endtime1,file="endtime1.Rdata")
+save(endtime2,file="endtime2.Rdata")
+save(endtime3,file="endtime3.Rdata")
+save(endtime4,file="endtime4.Rdata")
+save(endtime5,file="endtime5.Rdata")
