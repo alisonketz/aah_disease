@@ -543,20 +543,31 @@ which(1994:2021 == 2017)
 
 
 load("datafiles/period_effect_survival.Rdata")
-load("datafiles/age_effect_survival.Rdata")
+# load("datafiles/age_effect_survival.Rdata")
 # load("datafiles/sus_beta0_survival.Rdata")
 # load("datafiles/sus_beta_sex_survival.Rdata")
 # load("datafiles/inf_beta0_survival.Rdata")
 # load("datafiles/inf_beta_sex_survival.Rdata")
 
-sus_beta0_survival <- -5
+sus_beta0_survival <- -6
 sus_beta_sex_survival <- -.5
 inf_beta0_survival <- -3
 inf_beta_sex_survival <- -1
 
-nT_age_surv <- length(age_effect_survival)
-nT_period_surv <- length(period_effect_survival)
+nT_age_surv <- 962
+nT_period_surv <- 1564
 
+age_effect_survival <- 2*exp(-.01*seq(1:nT_age_surv)) - mean(2*exp(-.01*seq(1:nT_age_surv)))
+# period_effect_survival <- 2 * exp(-.01 * seq(1:nT_age_surv)) - mean(2*exp(-.01*seq(1:nT_age_surv)))
+
+period_effect_survival <- 1 * sin(2/52 * pi * (1:nT_period_surv) + 1)
+period_effect_survival <- period_effect_survival - mean(period_effect_survival)
+# plot(period_effect_survival,type="l")
+# nT_age_surv <- length(age_effect_survival)
+# nT_period_surv <- length(period_effect_survival)
+# period_effect_survival[c(nT_period_surv - 1,nT_period_surv)] <- period_effect_survival[nT_period_surv - 2]
+
+# plot(age_effect_survival)
 ##########################################################################
 ### FOI Parameters
 ### loading age and period effects from Transmission v3 w/o Survival

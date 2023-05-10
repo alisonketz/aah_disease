@@ -110,8 +110,8 @@ modelcode <- nimbleCode({
   #### Non-Hunting Season Survival Infected
   ###################################################
     
-    # sn_inf ~ dbeta(150,100)
-    # tau_sn_inf ~ dgamma(10, 1)
+    ## sn_inf ~ dbeta(150,100)
+    ## tau_sn_inf ~ dgamma(10, 1)
     # mu_sn_inf[1] ~ dnorm(cloglog(.2), 10)
     # mu_sn_inf[2] ~ dnorm(cloglog(.3), 10)
     # for (t in 1:n_year) {
@@ -130,39 +130,39 @@ modelcode <- nimbleCode({
   # #### Hunting Season Survival Susceptibles
   # ###################################################
 
-  #   # sh_sus ~ dbeta(200,100)
-  #   # tau_sh_sus ~ dgamma(1, 1)
-    # mu_sh_sus[1] ~ dnorm(cloglog(.4), 10)
-    # mu_sh_sus[2] ~ dnorm(cloglog(.5), 10)
-    # for (t in 1:n_year) {
-    #     for(a in 1:n_agef) {
-    #       cll_sh_sus[1, a, t] ~ dnorm(mu_sh_sus[1], 10)
-    #       sh_sus[1, a, t] <- exp(-exp(cll_sh_sus[1, a, t]))
-    #     }
-    #     for(a in 1:n_agem) {
-    #         cll_sh_sus[2, a, t] ~ dnorm(mu_sh_sus[2], 10)
-    #         sh_sus[2, a, t] <- exp(-exp(cll_sh_sus[2, a, t]))
-    #     }
-    # }
+    # sh_sus ~ dbeta(200,100)
+    # tau_sh_sus ~ dgamma(1, 1)
+    mu_sh_sus[1] ~ dnorm(cloglog(.4), 10)
+    mu_sh_sus[2] ~ dnorm(cloglog(.5), 10)
+    for (t in 1:n_year) {
+        for(a in 1:n_agef) {
+          cll_sh_sus[1, a, t] ~ dnorm(mu_sh_sus[1], 10)
+          sh_sus[1, a, t] <- exp(-exp(cll_sh_sus[1, a, t]))
+        }
+        for(a in 1:n_agem) {
+            cll_sh_sus[2, a, t] ~ dnorm(mu_sh_sus[2], 10)
+            sh_sus[2, a, t] <- exp(-exp(cll_sh_sus[2, a, t]))
+        }
+    }
 
   # ###################################################
   # #### Hunting Season Survival Infected
   # ###################################################
 
-  #   # sh_inf ~ dbeta(150, 100)
-  #   # tau_sh_inf ~ dgamma(1, 1)
-    # mu_sh_inf[1] ~ dnorm(cloglog(.4), 10)
-    # mu_sh_inf[2] ~ dnorm(cloglog(.5), 10)
-    # for (t in 1:(n_year)) {
-    #     for(a in 1:n_agef) {
-    #       cll_sh_inf[1, a, t] ~ dnorm(mu_sh_inf[1], 10)
-    #       sh_inf[1, a, t] <- exp(-exp(cll_sh_inf[1, a, t]))
-    #     }
-    #     for(a in 1:n_agem) {
-    #         cll_sh_inf[2, a, t] ~ dnorm(mu_sh_inf[2], 10)
-    #         sh_inf[2, a, t] <- exp(-exp(cll_sh_inf[2, a, t]))
-    #     }
-    # }
+    # sh_inf ~ dbeta(150, 100)
+    # tau_sh_inf ~ dgamma(1, 1)
+    mu_sh_inf[1] ~ dnorm(cloglog(.4), 10)
+    mu_sh_inf[2] ~ dnorm(cloglog(.5), 10)
+    for (t in 1:(n_year)) {
+        for(a in 1:n_agef) {
+          cll_sh_inf[1, a, t] ~ dnorm(mu_sh_inf[1], 10)
+          sh_inf[1, a, t] <- exp(-exp(cll_sh_inf[1, a, t]))
+        }
+        for(a in 1:n_agem) {
+            cll_sh_inf[2, a, t] ~ dnorm(mu_sh_inf[2], 10)
+            sh_inf[2, a, t] <- exp(-exp(cll_sh_inf[2, a, t]))
+        }
+    }
 
 
   ###################################################
@@ -271,10 +271,9 @@ modelcode <- nimbleCode({
   eab_antlered_temp ~ dgamma(eab_antlered_alpha,eab_antlered_beta)
 
   for(t in 1:n_year) {
-    eab_antlerless[t] <- eab_antlerless_temp ^ x_eab[t]
-    eab_antlered[t]  <- eab_antlered_temp ^ x_eab[t]
+    eab_antlerless[t] <- eab_antlerless_temp^x_eab[t]
+    eab_antlered[t]  <- eab_antlered_temp^x_eab[t]
   }
-
 
   ######################################################################
   ###
@@ -501,7 +500,7 @@ nimConsts <- list(
     sizeCage_m = sizeCage_m,
     report_hyp_all = report_hyp_all,
     report_hyp_y = report_hyp_y,
-    # psi = array(runif(2*n_agef*n_year, .001, .01),c(2, n_agef, n_year)),
+    psi = array(runif(2*n_agef*n_year, .001, .01),c(2, n_agef, n_year)),
     # fec_init = fawndoe_df$overall_fd[1],
     n_year_fec_early = n_year_fec_early,
     # n_year_precollar = n_year_precollar,
@@ -534,7 +533,8 @@ nimConsts <- list(
     eab_antlerless_alpha = eab_anterless_alpha,
     eab_antlerless_beta = eab_anterless_beta,
     eab_antlered_alpha = eab_antlered_alpha,
-    eab_antlered_beta = eab_antlered_beta 
+    eab_antlered_beta = eab_antlered_beta,
+    intvl_step_yr = intvl_step_yr
 )
 
 #Initial values
@@ -548,9 +548,9 @@ initsFun <- function()list(
   # tau_sn_sus = rgamma(1, 10, 1),
   # mu_sn_inf = rnorm(2,cloglog(.3), .001),
   # tau_sn_inf = rgamma(1, 10, 1),
-  # mu_sh_sus = rnorm(2,cloglog(.6), .001),
+  mu_sh_sus = rnorm(2,cloglog(.6), .001),
   # tau_sh_sus = rgamma(1,4, 6),
-  # mu_sh_inf = rnorm(2,cloglog(.5), .001),
+  mu_sh_inf = rnorm(2,cloglog(.5), .001),
   # tau_sh_inf = rgamma(1,4, 6),
   # pop_sus = pop_sus_init,
   # pop_inf = pop_inf_init,
@@ -567,7 +567,7 @@ initsFun <- function()list(
   fec_epsilon = fec_eps_init,#rnorm(n_year_fec_early, 0, sd = .01),
   mu_fec = rnorm(1, mu_fec_init, .01),
   fec_prec_eps = runif(1, 5, 10),
-  eab_anterless_temp = 1.55,
+  eab_antlerless_temp = 1.55,
   eab_antlered_temp = .71
 )
 nimInits <- initsFun()
@@ -608,7 +608,7 @@ parameters <- c("fec",
               # "tau_pop_inf"
               )
 n_thin <- 1
-n_chains <- 3
+n_chains <- 1
 reps <- 100
 bin <- 0
 starttime <- Sys.time()
@@ -617,9 +617,16 @@ confMCMC <- configureMCMC(Rmodel,
                           thin = n_thin,
                           # enableWAIC = TRUE,
                           useConjugacy = FALSE)
+for(i in 1:10){beepr::beep()}
+
 nimMCMC <- buildMCMC(confMCMC)
+for(i in 1:10){beepr::beep()}
+
 Cnim <- compileNimble(Rmodel)
+for(i in 1:10){beepr::beep()}
+
 CnimMCMC <- compileNimble(nimMCMC, project = Rmodel)
+for(i in 1:10){beepr::beep()}
 
 set.seed(12191591)
 starttime <- Sys.time()
@@ -632,6 +639,7 @@ mcmcout <- runMCMC(CnimMCMC,
                    summary = TRUE
                   #  WAIC=TRUE
                    )
+for(i in 1:10){beepr::beep()}
 
 runtime <- difftime(Sys.time(),
                   starttime,

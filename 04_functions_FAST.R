@@ -31,9 +31,9 @@ calc_surv_aah <- nimble::nimbleFunction(
 
     # s_aah[sex,age,period]
     #S0 <- nimArray(NA,c(2,nT_age,nT_period))
-     S0 <- nimArray(NA,c(2,n_agef,n_year))
+     S0 <- nimArray(0,c(2,n_agef,n_year))
     #UCH <- nimArray(NA,c(2,nT_age,nT_period))
-    s_aah <- nimArray(NA,c(2,n_agef,n_year))
+    s_aah <- nimArray(0,c(2,n_agef,n_year))
 		
 # for age 1
         for(j in 1:n_year) {
@@ -190,12 +190,10 @@ calc_surv_harvest <- nimble::nimbleFunction(
     ###################################################################
 
     # s_aah[sex,age,period]
-    S0 <- nimArray(NA,c(2,n_agef,n_year))
-    #UCH_hunt <- nimArray(NA,c(2,nT_age,nT_period))
-    #S0_hunt <- nimArray(NA,c(2,nT_age,nT_period))
-    S0_hunt <- nimArray(NA,c(2,n_agef,n_year))
-    S0_hunt2 <- nimArray(NA,c(2,n_agef,n_year))
-    s_hunt <- nimArray(NA,c(2,n_agef,n_year))
+    S0 <- nimArray(0,c(2,n_agef,n_year))
+    S0_hunt <- nimArray(0,c(2,n_agef,n_year))
+    S0_hunt2 <- nimArray(0,c(2,n_agef,n_year))
+    s_hunt <- nimArray(0,c(2,n_agef,n_year))
 	p_vec_f <- nimNumeric(length = intvl_step_yr*n_year, init = FALSE)
 	p_vec_m <- nimNumeric(length = intvl_step_yr*n_year, init = FALSE)
 	
@@ -280,7 +278,7 @@ calc_surv_harvest <- nimble::nimbleFunction(
         for (a in 3:n_agef) {
             #s_hunt[1,a,t] <- S0_hunt[1,a,t]/
             #                    S0[1,a-1,t-1]
-            s_hunt[1,a,t] <- exp(-(S0_hunt[1,a,t]+S0[1,a-1,t-1]-S0_hunt2[1,a-1,t-1]))/exp(-S0[1,a-1,t-1])
+            s_hunt[1,a,t] <- exp(-(S0_hunt[1,a,t] + S0[1,a-1,t-1]-S0_hunt2[1,a-1,t-1]))/exp(-S0[1,a-1,t-1])
        }
         for(a in 3:n_agem) {
             #s_hunt[2,a,t] <- S0_hunt[2,a,t]/
@@ -293,65 +291,65 @@ calc_surv_harvest <- nimble::nimbleFunction(
 })
 Ccalc_surv_harvest <- compileNimble(calc_surv_harvest)
 
-starttime <- Sys.time()
-sh_sus_fast <- Ccalc_surv_harvest(
-		#nT_age = nT_age_surv,
-        #nT_period = nT_period_surv,
-        beta0 = sus_beta0_survival,
-        beta_sex = sus_beta_sex_survival,
-        age_effect = age_effect_survival,
-        period_effect = period_effect_survival,
-        #yr_end_indx = d_fit_season$yr_end,
-        intvl_step_yr = intvl_step_yr,
-        n_year = n_year,
-        n_agef = n_agef,
-        n_agem = n_agem,
-        #pre_hunt_end = d_fit_season$pre_hunt_end,
-        ng_start = d_fit_season$ng_start,
-        gun_start = d_fit_season$gun_start,
-        gun_end = d_fit_season$gun_end,
-        ng_end = d_fit_season$ng_end,
-        yr_start = d_fit_season$yr_start,
-        yr_end = d_fit_season$yr_end,
-		#p_vec_f = p_vec_f,
-		#p_vec_m = p_vec_m
-        p_nogun_f = p_ng_f,
-        p_nogun_m = p_ng_m,
-        p_gun_f = p_gun_f,
-        p_gun_m = p_gun_m
-        )
-# (endtime3fast <- Sys.time() - starttime)
+# starttime <- Sys.time()
+# sh_sus_fast <- Ccalc_surv_harvest(
+# 		#nT_age = nT_age_surv,
+#         #nT_period = nT_period_surv,
+#         beta0 = sus_beta0_survival,
+#         beta_sex = sus_beta_sex_survival,
+#         age_effect = age_effect_survival,
+#         period_effect = period_effect_survival,
+#         #yr_end_indx = d_fit_season$yr_end,
+#         intvl_step_yr = intvl_step_yr,
+#         n_year = n_year,
+#         n_agef = n_agef,
+#         n_agem = n_agem,
+#         #pre_hunt_end = d_fit_season$pre_hunt_end,
+#         ng_start = d_fit_season$ng_start,
+#         gun_start = d_fit_season$gun_start,
+#         gun_end = d_fit_season$gun_end,
+#         ng_end = d_fit_season$ng_end,
+#         yr_start = d_fit_season$yr_start,
+#         yr_end = d_fit_season$yr_end,
+# 		#p_vec_f = p_vec_f,
+# 		#p_vec_m = p_vec_m
+#         p_nogun_f = p_ng_f,
+#         p_nogun_m = p_ng_m,
+#         p_gun_f = p_gun_f,
+#         p_gun_m = p_gun_m
+#         )
+# # (endtime3fast <- Sys.time() - starttime)
 
-
-starttime <- Sys.time()
-sh_inf_fast <- Ccalc_surv_harvest(
-		#nT_age = nT_age_surv,
-        #nT_period = nT_period_surv,
-        beta0 = inf_beta0_survival,
-        beta_sex = inf_beta_sex_survival,
-        age_effect = age_effect_survival,
-        period_effect = period_effect_survival,
-        #yr_end_indx = d_fit_season$yr_end,
-        intvl_step_yr = intvl_step_yr,
-        n_year = n_year,
-        n_agef = n_agef,
-        n_agem = n_agem,
-        #pre_hunt_end = d_fit_season$pre_hunt_end,
-        ng_start = d_fit_season$ng_start,
-        gun_start = d_fit_season$gun_start,
-        #gun_end = d_fit_season$gun_end,
-        gun_end = d_fit_season$gun_end,
-        ng_end = d_fit_season$ng_end,
-        yr_start = d_fit_season$yr_start,
-        yr_end = d_fit_season$yr_end,
-		#p_vec_f = p_vec_f,
-		#p_vec_m = p_vec_m
-        p_nogun_f = p_ng_f,
-        p_nogun_m = p_ng_m,
-        p_gun_f = p_gun_f,
-        p_gun_m = p_gun_m
-        )
-(endtime4fast <- Sys.time() - starttime)
+# sh_sus_fast
+# starttime <- Sys.time()
+# sh_inf_fast <- Ccalc_surv_harvest(
+# 		#nT_age = nT_age_surv,
+#         #nT_period = nT_period_surv,
+#         beta0 = inf_beta0_survival,
+#         beta_sex = inf_beta_sex_survival,
+#         age_effect = age_effect_survival,
+#         period_effect = period_effect_survival,
+#         #yr_end_indx = d_fit_season$yr_end,
+#         intvl_step_yr = intvl_step_yr,
+#         n_year = n_year,
+#         n_agef = n_agef,
+#         n_agem = n_agem,
+#         #pre_hunt_end = d_fit_season$pre_hunt_end,
+#         ng_start = d_fit_season$ng_start,
+#         gun_start = d_fit_season$gun_start,
+#         #gun_end = d_fit_season$gun_end,
+#         gun_end = d_fit_season$gun_end,
+#         ng_end = d_fit_season$ng_end,
+#         yr_start = d_fit_season$yr_start,
+#         yr_end = d_fit_season$yr_end,
+# 		#p_vec_f = p_vec_f,
+# 		#p_vec_m = p_vec_m
+#         p_nogun_f = p_ng_f,
+#         p_nogun_m = p_ng_m,
+#         p_gun_f = p_gun_f,
+#         p_gun_m = p_gun_m
+#         )
+# (endtime4fast <- Sys.time() - starttime)
 
 
 # sh_sus[1:2,1:n_agef,1:n_year] <- Ccalc_surv_harvest(nT_age = nT_age_surv,
@@ -457,9 +455,9 @@ calc_infect_prob <- nimbleFunction(
 # save(endtime5fast,file="endtime5fast.Rdata")
 
 
-load("sn_sus_slow.RData")
-load("sn_inf_slow.RData")
-load("sh_sus_slow.RData")
-load("sh_inf_slow.RData")
+# load("sn_sus_slow.RData")
+# load("sn_inf_slow.RData")
+# load("sh_sus_slow.RData")
+# load("sh_inf_slow.RData")
 
 

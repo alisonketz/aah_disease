@@ -61,7 +61,9 @@ source("03_preliminaries_fake.R")
 ### probability of changing infection status
 ###############################################
 
-source("04_functions.R")
+# source("04_functions_SLOW.R")
+# source("04_functions_GES.R")
+source("04_functions_FAST.R")
 
 ###################################
 ### Run model
