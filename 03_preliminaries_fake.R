@@ -96,8 +96,8 @@ lm_f <- lm(prevalence_f~x,data=df_prev_f)
 df_prev_m <- data.frame(x=2002:2021,prevalence_m=log(prevalence_m))
 lm_m <- lm(prevalence_m~x,data=df_prev_m)
 # summary(lm_m)
-pred_prev_f <- exp(predict(lm_f,newdata=data.frame(x=1993:2001)))
-pred_prev_m <- exp(predict(lm_m,newdata=data.frame(x=1993:2001)))
+pred_prev_f <- exp(predict(lm_f,newdata=data.frame(x=1994:2001)))
+pred_prev_m <- exp(predict(lm_m,newdata=data.frame(x=1994:2001)))
 
 pred_prev_f
 pred_prev_m
@@ -291,22 +291,22 @@ m_logpop_inf <- log(initN_inf[2,1:n_agem])
 ########################################
 
 
-antlerless_corr <- c(1.55, 2.39)
-mn_antlerless <- mean(antlerless_corr)
-var_antlerless  <- ((2.39 - 1.55) / 2) ^ 2
+# antlerless_corr <- c(1.55, 2.39)
+# mn_antlerless <- mean(antlerless_corr)
+# var_antlerless  <- ((2.39 - 1.55) / 2) ^ 2
 
-antlered_corr <- c(.29, .36)
-mn_antlered <- mean(antlered_corr)
-var_antlered <- ((.36 - .29) / 2) ^ 2
+# antlered_corr <- c(.29, .36)
+# mn_antlered <- mean(antlered_corr)
+# var_antlered <- ((.36 - .29) / 2) ^ 2
 
-antlerless_param <- gamma_moments(mn_antlerless,var_antlerless)
-antlered_param <- gamma_moments(mn_antlered,var_antlered)
+# antlerless_param <- gamma_moments(mn_antlerless,var_antlerless)
+# antlered_param <- gamma_moments(mn_antlered,var_antlered)
 
-png("correction_factors_hunterharvest.png")
-par(mfrow=c(2,1))
-hist(rgamma(10000,antlerless_param$alpha,antlerless_param$beta), main = "Antleress")
-hist(rgamma(10000,antlered_param$alpha,antlered_param$beta), main = "Antlered")
-dev.off()
+# png("correction_factors_hunterharvest.png")
+# par(mfrow=c(2,1))
+# hist(rgamma(10000,antlerless_param$alpha,antlerless_param$beta), main = "Antleress")
+# hist(rgamma(10000,antlered_param$alpha,antlered_param$beta), main = "Antlered")
+# dev.off()
 
 
 ########################################
@@ -423,6 +423,12 @@ Cage_ant <- Cage[2,2:6,]
 sizeCage_f <- apply(Cage_less,2,sum)
 sizeCage_m <- apply(Cage_ant,2,sum)
 
+pCage_ant <- matrix(NA,nr=5,nc=n_year)
+for(i in 1:n_year){
+      pCage_ant[,i] <- Cage_ant[,i]/sum(Cage_ant[,i])
+}
+
+
 #############################################
 ###
 ### initial values for reporting rates
@@ -501,11 +507,11 @@ n_year_fec_early <- nrow(fawndoe_df)
 ##########################################################################
 # preliminaries for survival model using GPS collar
 ###########################################################################
-# n_year_precollar <- length(1992:2016)
+
 n_year_precollar <- length(1994:2016)
 n_year_collar <- length(2017:2021)
 
-which(1994:2021 == 2017)
+# which(1994:2021 == 2017)
 
 ##########################################################################
 ### Survival Parameters
@@ -542,32 +548,37 @@ which(1994:2021 == 2017)
 # save(inf_beta_sex_survival,file="datafiles/inf_beta_sex_survival.Rdata")
 
 
-load("datafiles/period_effect_survival.Rdata")
+# load("datafiles/period_effect_survival.Rdata")
 # load("datafiles/age_effect_survival.Rdata")
 # load("datafiles/sus_beta0_survival.Rdata")
 # load("datafiles/sus_beta_sex_survival.Rdata")
 # load("datafiles/inf_beta0_survival.Rdata")
 # load("datafiles/inf_beta_sex_survival.Rdata")
 
-sus_beta0_survival <- -6
-sus_beta_sex_survival <- -.5
-inf_beta0_survival <- -3
-inf_beta_sex_survival <- -1
+sus_beta0_survival <- -8.75
+sus_beta_sex_survival <- -.75
+inf_beta0_survival <- -8
+inf_beta_sex_survival <- -.5
 
 nT_age_surv <- 962
 nT_period_surv <- 1564
 
-age_effect_survival <- 2*exp(-.01*seq(1:nT_age_surv)) - mean(2*exp(-.01*seq(1:nT_age_surv)))
-# period_effect_survival <- 2 * exp(-.01 * seq(1:nT_age_surv)) - mean(2*exp(-.01*seq(1:nT_age_surv)))
+age_effect_survival <- 2*exp(-.09*seq(1:nT_age_surv))
+age_effect_survival[600:nT_period_surv] <- .00001*exp(.009*seq(600:nT_period_surv))
+age_effect_survival <- age_effect_survival- mean(age_effect_survival)
+plot(age_effect_survival)
 
-period_effect_survival <- 1 * sin(2/52 * pi * (1:nT_period_surv) + 1)
+# head(round(age_effect_survival,2),100)
+
+period_effect_survival <- 1 * sin(2/52 * pi * (1:nT_period_surv)) + rnorm(nT_period_surv,0,.1)
 period_effect_survival <- period_effect_survival - mean(period_effect_survival)
-# plot(period_effect_survival,type="l")
+plot(period_effect_survival[1:104],type="l")
 # nT_age_surv <- length(age_effect_survival)
 # nT_period_surv <- length(period_effect_survival)
 # period_effect_survival[c(nT_period_surv - 1,nT_period_surv)] <- period_effect_survival[nT_period_surv - 2]
 
-# plot(age_effect_survival)
+# period_effect_survival <- rnorm(nT_period_surv,0,.5)
+# period_effect_survival <- period_effect_survival-mean(period_effect_survival)
 ##########################################################################
 ### FOI Parameters
 ### loading age and period effects from Transmission v3 w/o Survival
@@ -591,6 +602,10 @@ m_period_foi <- c(pred_foiperiod_m,m_period_foi)
 f_period_foi <- f_period_foi[-length(f_period_foi)]
 m_period_foi <- m_period_foi[-length(m_period_foi)]
 nT_period_foi <- length(f_period_foi) #number of years == n_year
+
+#making lower b/c this is monthly rather than weekly
+# f_age_foi <- f_age_foi -3
+# m_age_foi  <- m_age_foi -3
 
 ##########################################################################
 ### Testing survival generated parameters
@@ -657,12 +672,45 @@ p_gun_m <- p_hunt$p_gun_m
 # Sd = -(.29*(-.49/-.6) - .29*(-.7/-.6))/2 = 0.05075
 
 
-eab_anterless_alpha <- gamma_moments(1.55, .06875^2)$alpha
-eab_anterless_beta <- gamma_moments(1.55, .06875^2)$beta
+eab_antlerless_alpha <- gamma_moments(1.49, .1225^2)$alpha
+eab_antlerless_beta <- gamma_moments(1.49, .1225^2)$beta
 
-eab_antlered_alpha <- gamma_moments(.71, .05075^2)$alpha
-eab_antlered_beta <- gamma_moments(.71, .05075^2)$beta
+eab_antlered_alpha <- gamma_moments(.71, .1015^2)$alpha
+eab_antlered_beta <- gamma_moments(.71, .1015^2)$beta
 
 
-# hist(rgamma(10000,eab_anterless_alpha,eab_anterless_beta))
-# hist(rgamma(10000,eab_antlered_alpha,eab_antlered_beta))
+hist(rgamma(10000,eab_anterless_alpha,eab_anterless_beta))
+hist(rgamma(10000,eab_antlered_alpha,eab_antlered_beta))
+
+df_temp <- data.frame(year=1994:2021,tot=Ototal$antlerless,totant=Ototal$antlered,eab=df_eab$EAB)
+df_temp$eab <- as.factor(df_temp$eab)
+ggplot(data=df_temp) + 
+      geom_point(aes(x = year,
+                        y = tot,
+                        color = eab),
+                  size=8) +
+      geom_point(aes(x = year,
+                     y = totant,
+                     color = eab),
+                  size=8) +
+      geom_line(aes(x=year,y=tot),size=1) + 
+      geom_line(aes(x=year,y=totant),
+                    size=1,color="green4") +
+      theme_bw() 
+
+
+
+######################################################################
+###
+### fixing the FOI age lookup vector
+###
+#######################################################################
+
+# age_lookup_m_conv <- age_lookup_m
+# age_lookup_f_conv <- c(age_lookup_f,rep(7,52))
+
+age_lookup_f_conv <- c(rep(1:4,each=52),rep(5,104),rep(6,156),rep(7,52))
+age_lookup_m_conv <- c(rep(1:4,each=52),rep(5,104),rep(6,156))
+Nage_lookup_conv <- length(age_lookup_f_conv)
+
+Nage_lookup_conv
