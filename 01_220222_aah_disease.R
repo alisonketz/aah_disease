@@ -45,8 +45,8 @@ source("summarize.R")
 ### Load and clean data
 ####################################
 
-# source("02_load_clean_data.R")
-source("02_load_data.R")
+source("02_load_clean_data.R")
+# source("02_load_data.R")
 
 ####################################
 ### Format data
@@ -63,7 +63,9 @@ source("03_preliminaries_fake.R")
 
 # source("04_functions_SLOW.R")
 # source("04_functions_GES.R")
-source("04_functions_FAST.R")
+# source("04_functions_FAST.R")
+
+source("04_functions_FASTEST_fixed.R")
 
 ###################################
 ### Run model
