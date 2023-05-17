@@ -39,14 +39,18 @@ out <- mcmcout$samples
 # ggplot(data=cause.df,aes(y=cause.sum))+geom_point(aes(x=age,color=cause))+facet_wrap(.~cause)
 
 gelman.diag(out[,"fec[18]"])
-gelman.diag(out[,"mu_fec"])
-gelman.diag(out[,"sn_sus[2, 1, 1]"])
-gelman.diag(out[,"sn_inf[2, 1, 1]"])
-gelman.diag(out[,"sn_sus[20, 1, 1]"])
-gelman.diag(out[,"sn_inf[20, 1, 1]"])
+gelman.diag(out[,"fec[28]"])
+
+# gelman.diag(out[,"mu_fec"])
+# gelman.diag(out[,"sn_sus[2, 1, 1]"])
+# gelman.diag(out[,"sn_inf[2, 1, 1]"])
+# gelman.diag(out[,"sn_sus[20, 1, 1]"])
+# gelman.diag(out[,"sn_inf[20, 1, 1]"])
 gelman.diag(out[,"tau_obs[1]"])
 gelman.diag(out[,"tau_obs[2]"])
-gelman.diag(out[,"tau_pop"])
+gelman.diag(out[,"tau_pop[1]"])
+gelman.diag(out[,"tau_pop[2]"])
+
 # gelman.diag(out[,"tau_pop_pos"])
 
 # pop_indx=grep("pop_neg",rownames(fit_sum))
@@ -60,43 +64,27 @@ par(mfrow=c(1,1))
 pdf("figures/traceplots_ahh.pdf")
 
 traceplot(out[,"mu_obs[1, 1]"],ylab="mu_obs[1, 1]")
-abline(h=O[1, 1])
-
 traceplot(out[,"mu_obs[2, 1]"],ylab="mu_obs[2, 1]")
-abline(h=O[2, 1])
-
-O[1, 1]
-O[2, 1]
-
-
 traceplot(out[,"mu_fec"],ylab="mu_fec")
 traceplot(out[,"fec[8]"],ylab="fec[8]")
 traceplot(out[,"fec[15]"],ylab="fec[15]")
 traceplot(out[,"fec[28]"],ylab="fec[28]")
 
-traceplot(out[,"sh_sus"],ylab="sh_sus")
-traceplot(out[,"sh_inf"],ylab="sh_inf")
-# traceplot(out[,"sn_sus"],ylab="sn_sus")
-# traceplot(out[,"sn_inf"],ylab="sn_inf")
-
-traceplot(out[,"sn_sus[1, 1, 1]"],ylab="sn_sus[1, 1, 1]")
-traceplot(out[,"sn_sus[1, 1, 21]"],ylab="sn_sus[1, 1, 21]")
-
-
-traceplot(out[,"sh_sus[1, 1, 1]"],ylab="sh_sus[1, 1, 1]")
-traceplot(out[,"sh_sus[1, 1, 21]"],ylab="sh_sus[1, 1, 21]")
-
-traceplot(out[,"sn_inf[1, 1, 21]"],ylab="sn_inf[1, 1, 21]")
-traceplot(out[,"sn_inf[1, 1, 2]"],ylab="sn_inf[1, 1, 2]")
+# traceplot(out[,"sn_sus[1, 1, 1]"],ylab="sn_sus[1, 1, 1]")
+# traceplot(out[,"sn_sus[1, 1, 21]"],ylab="sn_sus[1, 1, 21]")
+# traceplot(out[,"sh_sus[1, 1, 1]"],ylab="sh_sus[1, 1, 1]")
+# traceplot(out[,"sh_sus[1, 1, 21]"],ylab="sh_sus[1, 1, 21]")
+# traceplot(out[,"sn_inf[1, 1, 21]"],ylab="sn_inf[1, 1, 21]")
+# traceplot(out[,"sn_inf[1, 1, 2]"],ylab="sn_inf[1, 1, 2]")
 
 traceplot(out[,"tau_obs[1]"],ylab="tau_obs[1]: antlerless")
 traceplot(out[,"tau_obs[2]"],ylab="tau_obs[2]: antlered")
-traceplot(out[,"tau_pop_inf_f"],ylab="tau_pop_inf_f")
+# traceplot(out[,"tau_pop_inf_f"],ylab="tau_pop_inf_f")
 
 traceplot(out[,"tau_pop[1]"],ylab="tau_pop[1]")
 traceplot(out[,"tau_pop[2]"],ylab="tau_pop[2]")
-traceplot(out[,"tau_pop[3]"],ylab="tau_pop[3]")
-traceplot(out[,"tau_pop[4]"],ylab="tau_pop[4]")
+# traceplot(out[,"tau_pop[3]"],ylab="tau_pop[3]")
+# traceplot(out[,"tau_pop[4]"],ylab="tau_pop[4]")
 
 
 # traceplot(out[,"tau_pop_pos"],ylab="tau_pop_pos")
@@ -107,15 +95,11 @@ traceplot(out[,"report[16]"],ylab="report[16]: 2017")
 traceplot(out[,"report[17]"],ylab="report[17]: 2018")
 traceplot(out[,"report[18]"],ylab="report[18]: 2019")
 traceplot(out[,"report[19]"],ylab="report[19]: 2020")
-
-# traceplot(out[,"fec[1]"],ylab="fec[1]: 2002")
-traceplot(out[,"fec[2]"],ylab="fec[2]: 2003")
-traceplot(out[,"fec[10]"],ylab="fec[10]: 2012")
-traceplot(out[,"fec[17]"],ylab="fec[17]: 2018")
-traceplot(out[,"fec[20]"],ylab="fec[20]: 2021")
+traceplot(out[,"eab_antlerless[3]"],ylab="eab_antlerless[3]")
 dev.off()
 
-fit_sum[grep("fec",rownames(fit_sum)),]
+round(fit_sum[grep("fec",rownames(fit_sum)),],2)
+fit_sum[grep("eab",rownames(fit_sum)),]
 
 ###################################################################
 ###

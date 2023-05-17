@@ -667,7 +667,7 @@ p_gun_m <- p_hunt$p_gun_m
 #################################################################
 
 # antlerless_correction = (1.55)
-# Sd = (.55*(2.3/2.04) - .55*(1.79/2.04))/2 =  0.06875
+# Sd = (.55*(2.3/2.04) - .49*(1.79/2.04))/2 =  0.06875
 # antlered_correction = (1 -.29)
 # Sd = -(.29*(-.49/-.6) - .29*(-.7/-.6))/2 = 0.05075
 
@@ -678,27 +678,30 @@ eab_antlerless_beta <- gamma_moments(1.49, .1225^2)$beta
 eab_antlered_alpha <- gamma_moments(.71, .1015^2)$alpha
 eab_antlered_beta <- gamma_moments(.71, .1015^2)$beta
 
-
-hist(rgamma(10000,eab_anterless_alpha,eab_anterless_beta))
+pdf("figures/eab_prior_plot.pdf")
+hist(rgamma(10000,eab_antlerless_alpha,eab_antlerless_beta))
 hist(rgamma(10000,eab_antlered_alpha,eab_antlered_beta))
+dev.off()
 
 df_temp <- data.frame(year=1994:2021,tot=Ototal$antlerless,totant=Ototal$antlered,eab=df_eab$EAB)
 df_temp$eab <- as.factor(df_temp$eab)
-ggplot(data=df_temp) + 
+eab_indicator_plot <- ggplot(data=df_temp) + 
       geom_point(aes(x = year,
                         y = tot,
                         color = eab),
-                  size=8) +
+                  size = 8) +
       geom_point(aes(x = year,
                      y = totant,
                      color = eab),
-                  size=8) +
-      geom_line(aes(x=year,y=tot),size=1) + 
-      geom_line(aes(x=year,y=totant),
-                    size=1,color="green4") +
-      theme_bw() 
+                  size = 8) +
+      geom_line(aes(x = year,y = tot), size = 1) + 
+      geom_line(aes(x = year, y = totant),
+                    size = 1,color = "green4") +
+      theme_bw()
 
+ggsave("eab_indicator_plot.png", eab_indicator_plot, height = 6, width = 6)
 
+eab_indicator_plot
 
 ######################################################################
 ###

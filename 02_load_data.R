@@ -29,6 +29,7 @@ filepath <- "~/Documents/aah/aah_disease/datafiles/"
 # save(df_camtrap_fd,file=paste0(filepath,"df_camtrap_fd.Rdata"))
 # save(report_hyp_y,file=paste0(filepath,"report_hyp_y.Rdata"))
 # save(Ototal,file=paste0(filepath,"Ototal.Rdata"))
+# save(df_eab,file=paste0(filepath,"df_eab.Rdata"))
 
 ###
 ### Load Data 
@@ -67,5 +68,3 @@ load(paste0(filepath,"df_age_early.Rdata"))
 load(paste0(filepath,"report_hyp_y.Rdata"))
 load(paste0(filepath,"Ototal.Rdata"))
 load(paste0(filepath,"df_eab.Rdata"))
-
-
